@@ -85,6 +85,7 @@ button:focus {outline:0;}
             z-index: 1;
             flex: none;
             display: block;
+            max-width: unset;
         }
         .hero header.wrapper nav {
             padding-top:10px;
