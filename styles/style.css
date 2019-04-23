@@ -74,8 +74,59 @@ button:focus {outline:0;}
                     rgba(39, 39, 39,1) 75%, 
                     rgba(30, 30, 30,1) 95%);
         }
-        .section.header {
+        .section.hero {
             min-height: 400px;
+        }
+        .hero .wrapper {
+            padding: 4em 0;
+        }
+        .hero header.wrapper {
+            padding: 10px 20px;
+            z-index: 1;
+            flex: none;
+            display: block;
+        }
+        .hero header.wrapper nav {
+            padding-top:10px;
+            display: block;
+            z-index: 2;
+        }
+        .hero header.wrapper nav a,
+        .hero header.wrapper nav span a {
+            font-family: futura-pt, sans-serif;
+            padding: 0px 8px;
+            font-size: 0.9em;
+            display: inline-block;
+            transform: scaleY(0.9);
+            font-weight: 100;
+            color: #fff;
+            text-decoration: none;
+            z-index: 2;
+        }
+        .hero header.wrapper nav span {
+            position: absolute;
+            margin-left: 10px;
+            margin-top:-20px;
+            padding: 30px;
+            display: none;
+            background-color: black;
+            z-index: 1;
+        }
+        .hero header.wrapper nav a:hover {
+            text-decoration: underline;
+        }
+        nav a.expand:hover + span, 
+        nav a.expand:active + span,
+        nav span:hover,
+        nav span a:hover {
+            display: block;
+            pointer-events: all;
+        }
+        header p.title {
+            color: #ffffff;
+            z-index: 1;
+            width: 10em;
+            margin: 0 auto;
         }
         footer {
             padding: 25px 0;
@@ -175,7 +226,7 @@ button:focus {outline:0;}
             font-family: agency-fb, sans-serif;
         }
     h1.title {
-        margin: 20px 0;
+        margin: 0.5em 0;
         text-shadow: 0 0 5px rgba(100,0,0,0.2);
     }
     h2 {
@@ -256,8 +307,15 @@ button:focus {outline:0;}
             opacity: 1;
             cursor: default;
         }
-        .title span {
+        .title span:only-child, .title span span {
             color: rgba(143, 9, 10, 1);
+        }
+        header .title > span {
+            background-color: #000;
+            margin: 2px 0;
+            padding: 0 10px;
+            display: inline-block;
+            text-align: center;
         }
     
     /* Other Elements */
@@ -285,7 +343,7 @@ button:focus {outline:0;}
         animation-delay: 2s;
     }
     button.primary_cta:hover {
-        background: rgba(143, 9, 10, 1);
+        background: rgba(143, 9, 10, 0.8);
         cursor: pointer;
         transform: scale(0.98);
         animation: none;
