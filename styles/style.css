@@ -13,6 +13,7 @@
 ::-webkit-scrollbar { 
     display: none; 
 }
+button:focus {outline:0;}
 
 /* Structure */
     .section {
@@ -235,7 +236,7 @@
     button.primary_cta {
         background: rgba(143, 9, 10, 0.56);
         font-family: futura-pt, sans-serif;
-        font-weight: 300;
+        font-weight: 600;
         font-style: normal;
         font-size: 0.8em;
         letter-spacing: 8;
@@ -243,10 +244,12 @@
 
         color: white;
         border: none;
+        margin: 20px 10px;
         padding: 0.5em 5em;
+        
         box-shadow: 
             inset 0px 0px 10px 2px rgba(25,0,0,0.5), 
-            0px 18px 5px -10px rgba(5,0,0,0.8);
+            0px 15px 5px -10px rgba(5,0,0,0.8);
 
         transition: all 0.5s;
         animation: shake-animation 5s ease infinite;
@@ -256,10 +259,11 @@
     button.primary_cta:hover {
         background: rgba(143, 9, 10, 1);
         cursor: pointer;
+        transform: scale(0.98);
         animation: none;
         box-shadow: 
             inset 0px 0px 10px 2px rgba(25,0,0,0.1), 
-            0px 15px 0px -15px rgba(5,0,0,0.8);
+            0px 10px 0px -15px rgba(5,0,0,0.8);
     }
     .buttonGlitch::after {
         content: attr(data-text);
