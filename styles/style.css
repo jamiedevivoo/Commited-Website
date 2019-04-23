@@ -1,0 +1,286 @@
+/* BODY */
+    body {
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+}
+/*
+@media only screen and (max-width: 1200px) and (min-width: 1000px) { body { font-size: 12px; } }
+@media only screen and (max-width: 1000px) and (min-width: 800px) { body { font-size: 8px; } }
+@media only screen and (max-width: 800px) { body { font-size: 6px; } }
+*/
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+/* Structure */
+    .section {
+        color: white;
+        width: 100%;
+        min-height: 50px;
+        background-color: #000000;
+        display: flex;
+        flex-wrap:wrap;
+        position: relative;
+    }
+        .section.customImageBackground {
+            background-size: cover;
+            padding: 20px 0;
+            min-height: 400px;
+        }
+        .section.customImageBackground::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: block;
+            background: 
+                linear-gradient(160deg, 
+                    rgba(0, 0, 0,0.8) 0%, 
+                    rgba(5, 0, 0,0.5) 20%, 
+                    rgba(5, 0, 0,0.2) 51%, 
+                    rgba(5, 0, 0,0.6) 75%,
+                    rgba(0, 0, 0,0.8) 90%);
+        }
+        .section.altBackground {
+            background-color: #272727;
+        }
+        .section.header {
+            min-height: 400px;
+        }
+        footer {
+            padding: 25px 0;
+        }
+        .section.footer .component {
+            min-width: unset !important;
+        }
+        .section.pros .wrapper {
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .section.pros .wrapper .component {
+            flex-grow: 1;
+            flex-shrink: 0;
+            flex-basis: fit-content;
+        }
+    
+    .wrapper {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap:wrap; 
+        box-sizing:border-box;
+        justify-content: center;
+        align-self: center;
+        overflow: hidden;
+    }
+    
+    .component {
+        flex: 1 1 0;
+        min-width: 450px;
+        justify-content: center;
+        text-align: center;
+        max-width: 1000px;
+        display: inline-grid;
+        align-self: stretch;
+    }
+        .component .componentImage {
+            width:100%; 
+            align-self: stretch;
+            object-fit: cover;
+        }
+        
+/* ## -- Text Styles -- ## */
+
+/* # Reset Styles */
+    h1, h2, h3, h4, h5, h6, p {
+        margin: 0;
+        padding: 0;
+    }
+
+
+/* # Spacings and margins */
+/*
+    .wrapper .component p:last-child::after {
+        margin-bottom: 50px;
+        content: "";
+        display: block;
+    }
+    .wrapper .component h2:first-child {
+        margin-top: 50px;
+    }
+*/
+    h2+p::before {
+        margin-top: 20px;
+        content: "";
+        display: block;
+    }
+    p + p::before {
+        margin-top: 15px;
+        content: "";
+        display: block;
+    }
+    
+    .component.padded {
+        padding: 50px;
+    }
+
+    /* Styles */
+    
+    h1 {
+        font-family: futura-pt, sans-serif;
+        font-weight: 400;    
+        font-style: normal;
+        font-size: 6em;
+        line-height: 1;
+        text-transform: uppercase;
+        word-break: break-all;
+        transition: transform 0.3s;
+    }
+        .committedTitle {
+            font-family: chantal, sans-serif;
+        }
+        .admittedTitle {
+            font-family: agency-fb, sans-serif;
+        }
+    h1.title {
+        margin: 20px 0;
+        text-shadow: 0 0 5px rgba(100,0,0,0.2);
+    }
+    h2 {
+        font-family: futura-pt, sans-serif;
+        font-style: normal;
+        font-size: 2em;
+        text-transform: uppercase;
+        font-weight:400;
+        transition: transform 0.3s;
+    }
+    h2.subtitle {
+        font-size: 1.8em;
+        opacity: 0.5;
+    }
+    .letter-spacing {
+        letter-spacing: 0.25em;
+        transform-origin: 50% 50%;
+        transform: translateX(0.15em);
+    }
+    .scaleOnHover {
+        opacity: 0.8;
+        transform: translateX(0.15em) scale(0.98);
+    }
+    .section:hover .scaleOnHover {
+        opacity: 1;
+        transform: translateX(0.15em) scale(1.00);
+    }
+    .section:hover .glitch::after {
+        animation: noise-anim 2s infinite linear alternate-reverse;
+    }
+    .section:hover .glitch::before {
+        animation: noise-anim-2 3s infinite linear alternate-reverse;
+    }
+    h3 {
+        font-family: futura-pt, sans-serif;
+        font-weight: 400;    
+        font-style: normal;
+        text-transform: uppercase;    
+    }
+        p {
+            font-family: futura-pt, sans-serif;
+            font-weight: 300;    
+            font-style: normal;
+            font-size: 1em;
+            line-height: 1.4;
+            letter-spacing: 1.5;
+        }
+        p.highlight {
+            font-weight: 600;
+        }
+        p.date {
+            font-family: futura-pt, sans-serif;
+            font-weight: 400;    
+            font-style: normal;
+            font-size: 1.5em;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 15;
+            opacity: 0.5;
+        }
+        p.title {
+            font-size: 1.6em;
+            letter-spacing: 12;
+            font-weight: 400;
+            display: inline-block;
+            width: 100%;
+            text-transform: uppercase;
+        }
+        p.credits, p.quickLinks {
+            font-size: 0.6em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            transition: 0.5s all;
+        }
+        p.credits:hover, p.quickLinks:hover {
+            opacity: 1;
+            cursor: default;
+        }
+        .title span {
+            color: rgba(143, 9, 10, 1);
+        }
+    
+    /* Other Elements */
+    button.primary_cta {
+        background: rgba(143, 9, 10, 0.56);
+        font-family: futura-pt, sans-serif;
+        font-weight: 300;
+        font-style: normal;
+        font-size: 0.8em;
+        letter-spacing: 8;
+        line-height: 2.5;
+
+        color: white;
+        border: none;
+        padding: 0.5em 5em;
+        box-shadow: 
+            inset 0px 0px 10px 2px rgba(25,0,0,0.5), 
+            0px 18px 5px -10px rgba(5,0,0,0.8);
+
+        transition: all 0.5s;
+        animation: shake-animation 5s ease infinite;
+        transform-origin: 50% 50%;
+        animation-delay: 2s;
+    }
+    button.primary_cta:hover {
+        background: rgba(143, 9, 10, 1);
+        cursor: pointer;
+        animation: none;
+        box-shadow: 
+            inset 0px 0px 10px 2px rgba(25,0,0,0.1), 
+            0px 15px 0px -15px rgba(5,0,0,0.8);
+    }
+    .buttonGlitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 2px;
+        right: 0px;
+        top: 0;
+        text-shadow: -1px 0 blue;
+        opacity: 0.8;
+        background: unset;
+        overflow: hidden;
+        clip: rect(0, 900px, 0, 0);
+        animation: noise-anim 2s infinite linear alternate-reverse;
+    }
+    @keyframes shake-animation {
+        000.00000% { transform:translate(0px,0) }
+        001.78571% { transform:translate(5px,0) rotate(0.2deg)}
+        003.57143% { transform:translate(0px,0) rotate(-0.2deg) }
+        005.35714% { transform:translate(5px,0) rotate(0.2deg) }
+        007.14286% { transform:translate(0px,0) rotate(-0.2deg) }
+        008.92857% { transform:translate(5px,0) rotate(0.2deg) }
+        010.71429% { transform:translate(0px,0) rotate(0deg) }
+        100.00000% { transform:translate(0px,0) rotate(0deg) }
+    }
