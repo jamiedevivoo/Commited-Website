@@ -114,9 +114,9 @@ button:focus {outline:0;}
         .section.customImageBackground .wrapper {
             z-index: 1;
         }
-        .hero header.wrapper {
+        .section.hero header.wrapper {
             padding: 10px 20px;
-            z-index: 1;
+            z-index: 2;
             flex: none;
             display: block;
             max-width: unset;
@@ -199,7 +199,7 @@ button:focus {outline:0;}
         box-sizing:border-box;
         justify-content: center;
         align-self: center;
-        overflow: visible;
+        overflow:auto;
     }
     
     .component {

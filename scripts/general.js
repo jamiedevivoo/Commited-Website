@@ -23,13 +23,13 @@ $(document.body).ready(function() {
         var nearEdge = false;    
         var nearTop = false;
         var nearBottom = false;
-        if((scrollDistanceFromTop < Math.min(100,(windowHeight / 2)))) 
+        if((scrollDistanceFromTop <= Math.min(100,(windowHeight / 2)))) 
            { 
             nearEdge = true;
             nearTop = true;
             nearBottom = false;
            } 
-        else if (scrollDistanceFromTop + windowHeight > documentHeight - Math.min(100,(windowHeight / 2)))
+        else if ((scrollDistanceFromTop + windowHeight) >= (documentHeight - Math.min(100,(windowHeight / 2))))
             {
                 nearEdge = true;
                 nearTop = false;
@@ -43,10 +43,9 @@ $(document.body).ready(function() {
 
         if (nearEdge == true) {
             $(".section").each(function(i) {   
-                
-                if (((scrollDistanceFromTop - (windowHeight / 2)) < ($(this).offset().top)) && 
-                    ((scrollDistanceFromTop + windowHeight) > ($(this).offset().top + $(this).outerHeight()))) {
-                        if ((nearTop) && ((scrollDistanceFromTop + (windowHeight / 2)) > $(this).offset().top)) {
+                if (((scrollDistanceFromTop - (windowHeight / 2)) <= ($(this).offset().top)) && 
+                    ((scrollDistanceFromTop + windowHeight) >= ($(this).offset().top + $(this).outerHeight(true)))) {
+                        if ((nearTop) && ((scrollDistanceFromTop + (windowHeight / 2)) >= $(this).offset().top)) {
                             $(this).removeClass("notActive").addClass("active");
                         } else if (nearBottom) {
                             $(this).removeClass("notActive").addClass("active");
@@ -59,25 +58,28 @@ $(document.body).ready(function() {
             $(".section").each(function(i) {
                 var previousSection = $(this).previousSibling,
                     nextSection = $(this).nextSibling,
-                    sectionHeight = $(this).outerHeight(),
+                    sectionHeight = $(this).outerHeight(true),
                     sectionOffset = $(this).offset().top;
 
                 var previousSectionhasLostFocus = false;
                 if (previousSection) {
-                    if (scrollDistanceFromTop > ($(previousSection).offset().top + ($(previousSection).outerHeight() / 2))) { previousSectionhasLostFocus = true; }
+                    if (scrollDistanceFromTop >= ($(previousSection).offset().top + ($(previousSection).outerHeight(true) / 2))) { previousSectionhasLostFocus = true; }
                     else { previousSectionhasLostFocus = false }
                 } else {
-                    if (scrollDistanceFromTop > (sectionOffset - (windowHeight / 2))) { previousSectionhasLostFocus = true; }
+                    if (scrollDistanceFromTop >= (sectionOffset - (windowHeight / 2))) { previousSectionhasLostFocus = true; }
                     else { previousSectionhasLostFocus = false }            
                 }
 
-                if ((previousSectionhasLostFocus) && (scrollDistanceFromTop < (sectionOffset + sectionHeight))) {
+                if ((previousSectionhasLostFocus) && (scrollDistanceFromTop <= (sectionOffset + sectionHeight))) {
                     $(".section.active").addClass("notActive").removeClass("active");
                     $(this).removeClass("notActive").addClass("active");
                 } else {
                     $(this).removeClass("active").addClass("notActive");
                 }
             });
+        }
+        if (scrollDistanceFromTop < 50) {
+            $(".section.hero").removeClass("notActive").addClass("active");
         }
     });
 });
