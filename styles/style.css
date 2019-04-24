@@ -207,13 +207,17 @@ button:focus {outline:0;}
         display: inline-grid;
         align-self: stretch;
     }
-        .component.imageContainer img:only-child {
+        .component.imageContainer img:only-child, .component.imageContainer video:only-child {
             width:100%; 
             align-self: stretch;
             object-fit: cover;
         }
         .component.mini {
             min-width:200px;
+            align-self: baseline;
+        }
+        .component.mini p {
+            padding: 0 20px;
         }
 /* ## -- Text Styles -- ## */
 
@@ -266,8 +270,13 @@ h2+div.wrapper {
         word-break: normal;
         transition: transform 0.3s;
     }
-        .committedTitle {
+        .committedTitle, .committedTitle.letter-spacing {
             font-family: chantal, sans-serif;
+            font-weight: 100;
+            letter-spacing: 0.3em;
+            transform: translateX(0.2em) scaleY(1.2);
+            display: inline-block;
+            font-size: 5em;
         }
         .admittedTitle, .admittedTitle.letter-spacing {
             font-family: agency-fb, sans-serif;
@@ -339,7 +348,7 @@ h2+div.wrapper {
             font-family: futura-pt, sans-serif;
             font-weight: 400;    
             font-style: normal;
-            font-size: 1.5em;
+            font-size: 1.2em;
             line-height: 1;
             text-transform: uppercase;
             letter-spacing: 15;
