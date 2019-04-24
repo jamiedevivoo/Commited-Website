@@ -9,15 +9,16 @@ button:focus {outline:0;}
         margin: 0;
         padding: 0;
         min-width: 320px;
-        font-size: 18px;
+        font-size: 24px;
         background: #000000;
 }
+@media only screen and (max-width: 1200px) { body { font-size: 20px; } }
+@media only screen and (max-width: 1000px) { body { font-size: 18px; } }
 @media only screen and (max-width: 800px) { body { font-size: 17px; } }
 @media only screen and (max-width: 700px) { body { font-size: 15px; } }
 @media only screen and (max-width: 600px) { body { font-size: 13px; } }
 @media only screen and (max-width: 500px) { body { font-size: 11px; } }
 @media only screen and (max-width: 400px) { body { font-size: 9px; } }
-
 
 /* Structure */
     .section {
@@ -45,6 +46,7 @@ button:focus {outline:0;}
             content: '';
             position: absolute;
             top: 0;
+            z-index: 0;
             bottom: 0;
             left: 0;
             right: 0;
@@ -76,7 +78,7 @@ button:focus {outline:0;}
                     rgba(30, 30, 30,1) 95%);
         }
         .section.hero {
-            min-height: calc(100vh - 150px);
+            min-height: calc(90vh - 150px);
         }
         .section.pros {
             font-size: 14px;
@@ -109,6 +111,9 @@ button:focus {outline:0;}
         .hero .wrapper {
             padding: 4em 0;
         }
+        .section.customImageBackground .wrapper {
+            z-index: 1;
+        }
         .hero header.wrapper {
             padding: 10px 20px;
             z-index: 1;
@@ -140,6 +145,7 @@ button:focus {outline:0;}
             text-decoration: none;
             z-index: 2;
             text-transform: uppercase;
+            margin-bottom: 15px;
         }
         .hero header.wrapper nav span {
             position: absolute;
@@ -163,7 +169,7 @@ button:focus {outline:0;}
         header p.title {
             color: #ffffff;
             z-index: 1;
-            width: 10em;
+            width: 8em;
             margin: 0 auto;
         }
         footer {
@@ -222,14 +228,15 @@ button:focus {outline:0;}
             z-index: 1;
         }
         .component.mini {
-            min-width: 200px;
+            min-width: 300px;
+            max-width: 500px;
             margin: 0 15px;
             padding-bottom: 25px;
-            flex-grow: 0;
+            flex-grow: 1;
             flex-shrink: 1;
-            flex-basis: 250px;
+            flex-basis: 100px;
             align-self: baseline;
-        }
+        } 
         .component.mini p {
             padding: 0 20px;
         }
@@ -297,12 +304,13 @@ h2+div.wrapper {
             font-weight: 100;
             letter-spacing: 0.3em;
             transform: translateX(0.2em) scaleY(1.2);
-            display: inline-block;
+            display: block;
             font-size: 5em;
         }
         .admittedTitle, .admittedTitle.letter-spacing {
             font-family: agency-fb, sans-serif;
             letter-spacing: 0.40em;
+            transform: translateX(0.2em);
         }
     h1.title {
         margin: 0.25em 0;
@@ -314,7 +322,9 @@ h2+div.wrapper {
         font-size: 2em;
         text-transform: uppercase;
         font-weight:400;
-        transition: all 0.3s ease-in-out;
+        transition: 
+            all 0.3s ease-in-out,
+            font-size 0s ease-in-out;
         text-shadow: 0px 5px 10px rgba(0,0,0,1);
     }
     h2.subtitle {
@@ -330,15 +340,26 @@ h2+div.wrapper {
         opacity: 0.6;
         transform: translateX(0.15em) scale(0.98);
     }
-    .section:hover .scaleOnHover {
+    .section {
+        transition: opacity 0.2s ease-in-out;
+    }
+    .section.notActive {
+        opacity: 0.7;
+    }
+    .section:not(.notActive) .scaleOnHover, 
+    .section.active .scaleOnHover{
         opacity: 1;
         transform: translateX(0.15em) scale(1.00);
         text-shadow: 0px 10px 10px rgba(0,0,0,1);
     }
-    .section:hover .glitch::after {
+    .section:not(.notActive):hover .glitch::after, 
+    .section:not(.notActive) .glitch:hover::after, 
+    .section.active:not(.notActive) .glitch::after  {
         animation: noise-anim 2s infinite linear alternate-reverse;
     }
-    .section:hover .glitch::before {
+    .section:not(.notActive):hover .glitch::before, 
+    .section:not(.notActive) .glitch:hover::before, 
+    .section.active:not(.notActive) .glitch::before {
         animation: noise-anim-2 3s infinite linear alternate-reverse;
     }
     h3 {
@@ -485,13 +506,41 @@ h2+div.wrapper {
        header .component {
             transition: 0.5S all;
         }
-    @media only screen and (max-width: 600px) {
-        header .component {
-            display: block;
-        }
-        .hero header.wrapper nav a {
-            font-size: 0.9em;
-            transform: scaleX(0.9);
-            padding: 2px 5px;
-        }
+@media screen and ( max-width: 600px ) { 
+    button.primary_cta {
+        padding: 0.6em 30px;
+        margin: 0 2em;
+        font-size: 2em;
     }
+}
+@media screen and ( max-width: 800px ) { 
+    .component.large {
+        min-width: 500px;
+    }  
+}
+@media screen and ( max-width: 800px ) { 
+    .hero header.wrapper {
+        font-size: 16px;
+    }
+    .hero header.wrapper .component {
+        display: block !important;
+    }
+    .hero header.wrapper nav a {
+        font-size: 0.9em;
+        transform: scaleX(0.9);
+        padding: 2px 5px;
+    }
+}
+    .component p {
+        max-width: 90vw;
+        margin: 0 auto;
+    }
+@media screen and ( min-width: 600px) {
+    .component p {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .component.large p {
+        max-width: 400px;
+    }
+}
