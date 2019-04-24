@@ -43,25 +43,9 @@
     </div>
     <div class="wrapper">
         <div class="component">
-            <button class="primary_cta buttonGlitch">PLAY NOW</button>
+            <button onclick="launchCommitted()" class="primary_cta buttonGlitch">PLAY NOW</button>
         </div>
     </div>
-</div>
-<div class="section">
-     <section style="min-height:500px;"class="video_section">
-     
-        <div id="videoPlayerContainer">
-
-            <video id="video0" class="videoplayer livePlayer" poster="assets/images/blackbg.jpeg" autoplay>
-                <source src="" type="video/mp4">
-            </video>
-
-            <div id="interactiveLayer">
-                <div id="videoButton" class="play"></div>
-            </div>
-
-        </div>   
-    </section>
 </div>
 <div class="section customImageBackground padded" style="background-image: url('images/exploreAndEscape.png');">
     <div class="wrapper">
@@ -113,6 +97,15 @@
             <h2 class="letter-Spacing glitch scaleOnHover">SEDGLEY HOUSE</h2>
             <p>Set in an abandoned Boscombe complex you must navigate your way through the property and it's open plan layout. The property has been untouches for over a decade with it's aesthetic being all natural.</p>
         </div>
+    </div>
+</div>
+<div id="videoPlayerContainer">
+    <video id="video0" class="videoplayer livePlayer" poster="assets/images/blackbg.jpeg" autoplay>
+        <source src="" type="video/mp4">
+    </video>
+
+    <div id="interactiveLayer">
+        <div id="videoButton" class="play"></div>
     </div>
 </div>
 <footer class="section footer">

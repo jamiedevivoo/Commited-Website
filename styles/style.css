@@ -406,7 +406,7 @@ h2+div.wrapper {
         }
     
     /* Other Elements */
-    button.primary_cta {
+    button.primary_cta, a.primary_cta {
         background: rgba(143, 9, 10, 0.56);
         font-family: futura-pt, sans-serif;
         font-weight: 600;
@@ -418,7 +418,8 @@ h2+div.wrapper {
         color: white;
         border: none;
         margin: 20px 10px;
-        padding: 0.8em 5em;
+        padding: 1.5em 5em;
+        text-decoration: none;
         
         box-shadow: 
             inset 0px 0px 10px 2px rgba(25,0,0,0.5), 
@@ -428,12 +429,16 @@ h2+div.wrapper {
         animation: shake-animation 5s ease infinite;
         transform-origin: 50% 50%;
         animation-delay: 2s;
+        z-index: 3;
+        pointer-events: all;
     }
-    button.primary_cta:hover {
+        button.primary_cta {
+            padding: 0.8em 5em;
+        }
+    button.primary_cta:hover, a.primary_cta:hover {
         background: rgba(143, 9, 10, 0.8);
         cursor: pointer;
         transform: scale(0.98);
-        animation: none;
         box-shadow: 
             inset 0px 0px 10px 2px rgba(25,0,0,0.1), 
             0px 10px 0px -15px rgba(5,0,0,0.8);
