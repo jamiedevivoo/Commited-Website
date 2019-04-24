@@ -37,7 +37,7 @@ button:focus {outline:0;}
     }
         .section.customImageBackground {
             background-size: cover;
-            min-height: 250px;
+            min-height: 400px;
             background-position: center;
         }
         .section.customImageBackground::before {
@@ -172,7 +172,9 @@ button:focus {outline:0;}
             align-self: stretch;
             object-fit: cover;
         }
-        
+        .component.mini {
+            min-width:200px;
+        }
 /* ## -- Text Styles -- ## */
 
 /* # Reset Styles */
@@ -193,11 +195,15 @@ button:focus {outline:0;}
         margin-top: 50px;
     }
 */
-    h2+p::before {
+    h2+p::before, h3+p::before {
         margin-top: 20px;
         content: "";
         display: block;
     }
+h2+div.wrapper {
+    margin-top:20px;
+}
+
     p + p::before {
         margin-top: 15px;
         content: "";
@@ -375,3 +381,9 @@ button:focus {outline:0;}
         010.71429% { transform:translate(0px,0) rotate(0deg) }
         100.00000% { transform:translate(0px,0) rotate(0deg) }
     }
+.loopingCircularInlineVideo {
+    width: 80%;
+    margin: 30px auto;
+    border-radius: 50%;
+    overflow: hidden;
+}
