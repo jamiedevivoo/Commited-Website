@@ -4,6 +4,16 @@ $(document.body).ready(function() {
         var titleText = $(this).text();
         $(this).attr("data-text",titleText);
     });
+    function configureMobileView() {
+        if ($(window).height() > $(window).width()) {
+            $(".hero header.wrapper .component").css("display","block");
+            $(".section.hero").css("font-size","1.2em");
+            if (window.devicePixelRatio >= 2) {
+                $(".section.hero").css("font-size","1.8em");
+            }
+        }
+    }
+    configureMobileView();
 
     $(window).scroll(function() {
         var scrollDistanceFromTop = $(this).scrollTop(),
