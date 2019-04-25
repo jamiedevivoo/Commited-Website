@@ -80,20 +80,88 @@ var stages = [
         outcome: [
             {
                 index: 0,
-                title: "First Decision",
+                title: "Corridor",
+                
+                flags_required: null,
+                
+                video_id: 5,
+                flags_set: null,
+                
+                next_stage: 4
+            },
+            {
+                index: 1,
+                title: "Living Room",
                 
                 flags_required: null,
                 
                 video_id: 6,
                 flags_set: null,
                 
-                next_stage: 4
+                next_stage: 5
             }
         ]
     },
     {
         stage_id: 4,
         video_id: 7,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Tap",
+                
+                flags_required: null,
+                
+                video_id: 8,
+                flags_set: null,
+                
+                next_stage: 5
+            },
+            {
+                index: 1,
+                title: "Dog Lead",
+                
+                flags_required: null,
+                
+                video_id: 9,
+                flags_set: null,
+                
+                next_stage: 5
+            }
+        ]
+    },
+    {
+        stage_id: 5,
+        video_id: 10,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:false,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: null,
+                
+                flags_required: null,
+                
+                video_id: 8,
+                flags_set: null,
+                
+                next_stage: 6
+            }
+        ]
+    },
+    {
+        stage_id: 6,
+        video_id: 11,
         
         is_start: false,
         is_end: true,
@@ -103,25 +171,317 @@ var stages = [
         outcome: [
             {
                 index: 0,
-                title: "First Decision",
+                title: "Camera",
                 
                 flags_required: null,
                 
-                video_id: 8,
+                video_id: 12,
                 flags_set: null,
                 
-                next_stage: 3
+                next_stage: 7
             },
             {
                 index: 1,
-                title: "First Decision",
+                title: "Drawer",
                 
                 flags_required: null,
                 
-                video_id: 9,
+                video_id: 13,
                 flags_set: null,
                 
-                next_stage: 6
+                next_stage: 7
+            }
+        ]
+    },
+    {
+        stage_id: 7,
+        video_id: 14,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Drawing",
+                
+                flags_required: null,
+                
+                video_id: 15,
+                flags_set: ['lookedAtDrawing'],
+                
+                next_stage: 8
+            },
+            {
+                index: 1,
+                title: "Painting",
+                
+                flags_required: null,
+                
+                video_id: 16,
+                flags_set: ['lookedAtPainting'],
+                
+                next_stage: 8
+            }
+        ]
+    },
+    {
+        stage_id: 8,
+        video_id: 17,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Corridor",
+                
+                flags_required: null,
+                
+                video_id: 18,
+                flags_set: null,
+                
+                next_stage: 9
+            },
+            {
+                index: 1,
+                title: "Room",
+                
+                flags_required: null,
+                
+                video_id: 22,
+                flags_set: null,
+                
+                next_stage: 9
+            }
+        ]
+    },
+    {
+        stage_id: 9,
+        video_id: 19,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Floorboards",
+                
+                flags_required: null,
+                
+                video_id: 2,
+                flags_set: null,
+                
+                next_stage: 10
+            },
+            {
+                index: 1,
+                title: "Rope"",
+                
+                flags_required: null,
+                
+                video_id: 21,
+                flags_set: null,
+                
+                next_stage: 10
+            }
+        ]
+    },
+    {
+        stage_id: 10,
+        video_id: 23,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Left Room",
+                
+                flags_required: null,
+                
+                video_id: 24,
+                flags_set: null,
+                
+                next_stage: 11
+            },
+            {
+                index: 1,
+                title: "Right Room",
+                
+                flags_required: null,
+                
+                video_id: 25,
+                flags_set: null,
+                
+                next_stage: 11
+            }
+        ]
+    },
+    {
+        stage_id: 11,
+        video_id: 26,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Enter",
+                
+                flags_required: null,
+                
+                video_id: 27,
+                flags_set: null,
+                
+                next_stage: 12
+            }
+        ]
+    },
+    {
+        stage_id: 12,
+        video_id: 28,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: 0,
+        outcome: [
+            {
+                index: 0,
+                title: "Default",
+                
+                flags_required: null,
+                
+                video_id: 29,
+                flags_set: null,
+                
+                next_stage: 13
+            },            {
+                index: 1,
+                title: "Door",
+                
+                flags_required: null,
+                
+                video_id: 30,
+                flags_set: null,
+                
+                next_stage: 13
+            },            {
+                index: 2,
+                title: "Stairs",
+                
+                flags_required: ['lookedAtPainting'],
+                
+                video_id: 31,
+                flags_set: null,
+                
+                next_stage: 13
+            },
+            {
+                index: 3,
+                title: "Stairs",
+                
+                flags_required: ['lookedAtDrawing'],
+                
+                video_id: 32,
+                flags_set: null,
+                
+                next_stage: 13
+            }
+        ]
+    },
+    {
+        stage_id: 13,
+        video_id: 33,
+        
+        is_start: false,
+        is_end: false,
+        
+        decision:true,
+        default_outcome: 0,
+        outcome: [
+            {
+                index: 0,
+                title: "Default",
+                
+                flags_required: null,
+                
+                video_id: 34,
+                flags_set: null,
+                
+                next_stage: 14
+            },
+            {
+                index: 1,
+                title: "Help",
+                
+                flags_required: null,
+                
+                video_id: 35,
+                flags_set: null,
+                
+                next_stage: 14
+            }
+            {
+                index: 2,
+                title: "Leave",
+                
+                flags_required: null,
+                
+                video_id: 36,
+                flags_set: null,
+                
+                next_stage: 14
+            }
+        ]
+    },
+    {
+        stage_id: 14,
+        video_id: 37,
+        
+        is_start: false,
+        is_end: true,
+        
+        decision:true,
+        default_outcome: null,
+        outcome: [
+            {
+                index: 0,
+                title: "Save",
+                
+                flags_required: null,
+                
+                video_id: 38,
+                flags_set: null,
+                
+                next_stage: null
+            },
+            {
+                index: 1,
+                title: "Leave",
+                
+                flags_required: null,
+                
+                video_id: 39,
+                flags_set: null,
+                
+                next_stage: null
             }
         ]
     }
