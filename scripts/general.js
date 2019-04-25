@@ -1,5 +1,7 @@
 $(document.body).ready(function() {
 
+//    jQuery("h2").fitText();
+    jQuery("h1").fitText();
     $(".glitch").each(function(i) {
         var titleText = $(this).text();
         $(this).attr("data-text",titleText);
@@ -9,7 +11,7 @@ $(document.body).ready(function() {
             $(".hero header.wrapper .component").css("display","block");
             $(".section.hero").css("font-size","1.2em");
             if (window.devicePixelRatio >= 2) {
-                $(".section.hero").css("font-size","1.8em");
+                $(".section.hero").css("font-size","1.5em");
             }
         }
     }
@@ -44,7 +46,7 @@ $(document.body).ready(function() {
         if (nearEdge == true) {
             $(".section").each(function(i) {   
                 if (((scrollDistanceFromTop - (windowHeight / 2)) <= ($(this).offset().top)) && 
-                    ((scrollDistanceFromTop + windowHeight) >= ($(this).offset().top + $(this).outerHeight(true)))) {
+                    ((scrollDistanceFromTop + windowHeight) >= ($(this).offset().top + ($(this).outerHeight() / 2)))) {
                         if ((nearTop) && ((scrollDistanceFromTop + (windowHeight / 2)) >= $(this).offset().top)) {
                             $(this).removeClass("notActive").addClass("active");
                         } else if (nearBottom) {

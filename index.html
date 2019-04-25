@@ -6,6 +6,8 @@
     <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
     <script src="scripts/general.js" type="text/javascript"></script>
     <script src="scripts/video-player.js" type="text/javascript"></script>
+    <script src="scripts/video-db.js" type="text/javascript"></script>
+    <script src="scripts/jquery.fittext.js" type="text/javascript"></script>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/glitch.css">
     <link rel="stylesheet" href="styles/videoStyles.css">
@@ -67,7 +69,9 @@
 <div class="section">
     <div class="wrapper">
         <div class="component large imageContainer">
-            <img src="images/storyTelling.jpg">
+            <video autoplay loop muted playsinline>
+                <source src="media/storytelling.mp4" type="video/mp4">
+            </video>
         </div>
         <div class="component padded large">
             <h2 class="letter-Spacing glitch scaleOnHover">Re-Writing Storytelling</h2>

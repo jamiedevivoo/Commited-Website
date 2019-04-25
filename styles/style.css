@@ -78,7 +78,7 @@ button:focus {outline:0;}
                     rgba(30, 30, 30,1) 95%);
         }
         .section.hero {
-            min-height: calc(90vh - 150px);
+            min-height: calc(100vh);
         }
         .section.pros {
             font-size: 14px;
@@ -137,9 +137,10 @@ button:focus {outline:0;}
             font-family: futura-pt, sans-serif;
             padding: 2px 2px;
             font-size: 0.75em;
+            margin-left:-10px;
             display: inline-block;
-            letter-spacing: 0.25em;
-            transform: scaleX(0.85);
+            letter-spacing: 0.6em;
+            transform: scaleX(0.8);
             font-weight: 100;
             color: #fff;
             text-decoration: none;
@@ -169,8 +170,9 @@ button:focus {outline:0;}
         header p.title {
             color: #ffffff;
             z-index: 1;
-            width: 8em;
+            width: 12em;
             margin: 0 auto;
+            letter-spacing: 0.5em;
         }
         footer {
             padding: 25px 0;
@@ -199,7 +201,7 @@ button:focus {outline:0;}
         box-sizing:border-box;
         justify-content: center;
         align-self: center;
-        overflow:auto;
+        overflow:visible;
     }
     
     .component {
@@ -315,6 +317,7 @@ h2+div.wrapper {
     h1.title {
         margin: 0.25em 0;
         text-shadow: 0 0 5px rgba(100,0,0,0.2);
+        letter-spacing: 0.25em;
     }
     h2 {
         font-family: futura-pt, sans-serif;
@@ -322,23 +325,30 @@ h2+div.wrapper {
         font-size: 2em;
         text-transform: uppercase;
         font-weight:400;
+        letter-spacing: 0.3em;
+        padding-left: 0.3em;
         transition: 
             all 0.3s ease-in-out,
             font-size 0s ease-in-out;
         text-shadow: 0px 5px 10px rgba(0,0,0,1);
+        position: relative;
     }
     h2.subtitle {
         font-size: 1.8em;
         opacity: 0.5;
     }
-    .letter-spacing {
-        letter-spacing: 0.25em;
+    .letter-spacing,.letter-Spacing {
+        letter-spacing: 0.3em;
+        padding-left: 0.3em;
         transform-origin: 50% 50%;
-        transform: translateX(0.15em);
+    }
+    .letter-Spacing.glitch::after, .letter-Spacing.glitch::before,
+    .letter-spacing.glitch::after, .letter-spacing.glitch::before {
+        padding-left: 0.1em;
     }
     .scaleOnHover {
         opacity: 0.6;
-        transform: translateX(0.15em) scale(0.98);
+        transform: scale(0.97);
     }
     .section {
         transition: opacity 0.2s ease-in-out;
@@ -349,7 +359,7 @@ h2+div.wrapper {
     .section:not(.notActive) .scaleOnHover, 
     .section.active .scaleOnHover{
         opacity: 1;
-        transform: translateX(0.15em) scale(1.00);
+        transform: scale(1.00);
         text-shadow: 0px 10px 10px rgba(0,0,0,1);
     }
     .section:not(.notActive):hover .glitch::after, 
@@ -519,9 +529,11 @@ h2+div.wrapper {
     }  
 }
 @media screen and ( max-width: 800px ) { 
+/*
     .hero header.wrapper {
         font-size: 16px;
     }
+*/
     .hero header.wrapper .component {
         display: block !important;
     }
@@ -534,6 +546,7 @@ h2+div.wrapper {
     .component p {
         max-width: 90vw;
         margin: 0 auto;
+        letter-spacing: 0.2em;
     }
 @media screen and ( min-width: 600px) {
     .component p {
@@ -541,6 +554,6 @@ h2+div.wrapper {
         margin: 0 auto;
     }
     .component.large p {
-        max-width: 400px;
+        max-width: 500px;
     }
 }
