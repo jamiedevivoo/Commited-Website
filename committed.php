@@ -22,7 +22,7 @@
 </div>
 <div class="section">
 <!--    <div id="videoPlayerContainer">-->
-    <video data-dashjs-player autoplay src="https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" controls></video>
+    <video data-dashjs-player autoplay src="http://committed.devivo.co.uk/test/config.mpd" muted="muted" controls></video>
 <!--
         <video data-dashjs-player loop="true" autoplay="true" >
             <source src="https://committed.devivo.co.uk/film/1-1s/1-1s.mpd" type="application/dash+xml">
