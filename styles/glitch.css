@@ -41,7 +41,7 @@
     100% { clip: rect(67px, 9999px, 20px, 0); filter: hue-rotate(0) }
 }
  .glitch::after {
-    left: 1px;
+    left: 2px;
     right: 0px;
     text-shadow: -1px 0 red;
 }
@@ -72,7 +72,7 @@
 	 100% { clip: rect(14px, 9999px, 03px, 0); filter: hue-rotate(360) }
 }
  .glitch::before {
-     left: -1px;
+     left: 2px;
      right: 0;
      text-shadow: 1px 0 blue;
 }

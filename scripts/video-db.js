@@ -284,7 +284,7 @@ var stages = [
             },
             {
                 index: 1,
-                title: "Rope"",
+                title: "Rope",
                 
                 flags_required: null,
                 
@@ -437,7 +437,7 @@ var stages = [
                 flags_set: null,
                 
                 next_stage: 14
-            }
+            },
             {
                 index: 2,
                 title: "Leave",

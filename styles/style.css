@@ -301,18 +301,17 @@ h2+div.wrapper {
         word-break: normal;
         transition: transform 0.3s;
     }
-        .committedTitle, .committedTitle.letter-spacing {
+        h1.title.committedTitle, .committedTitle.letter-spacing {
             font-family: chantal, sans-serif;
             font-weight: 100;
             letter-spacing: 0.3em;
-            transform: translateX(0.2em) scaleY(1.2);
+            transform: scaleY(1.2);
             display: block;
             font-size: 5em;
         }
-        .admittedTitle, .admittedTitle.letter-spacing {
+        h1.title.admittedTitle, .admittedTitle.letter-spacing {
             font-family: agency-fb, sans-serif;
             letter-spacing: 0.40em;
-            transform: translateX(0.2em);
         }
     h1.title {
         margin: 0.25em 0;
@@ -335,7 +334,7 @@ h2+div.wrapper {
     }
     h2.subtitle {
         font-size: 1.8em;
-        opacity: 0.5;
+        opacity: 0.4;
     }
     .letter-spacing,.letter-Spacing {
         letter-spacing: 0.3em;
@@ -405,7 +404,7 @@ h2+div.wrapper {
             line-height: 1;
             text-transform: uppercase;
             letter-spacing: 15;
-            opacity: 0.5;
+            opacity: 0.4;
         }
         p.title {
             font-size: 1.6em;

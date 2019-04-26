@@ -11,7 +11,7 @@ $(document.body).ready(function() {
             $(".hero header.wrapper .component").css("display","block");
             $(".section.hero").css("font-size","1.2em");
             if (window.devicePixelRatio >= 2) {
-                $(".section.hero").css("font-size","1.5em");
+//                $(".section.hero").css("font-size","1.5em");
             }
         }
     }
