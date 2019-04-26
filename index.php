@@ -1,44 +1,10 @@
-<!DOCTYPE html>
-<HTML>
-<HEAD>
-    <TITLE>Aversion Games</TITLE>
-    <link rel="stylesheet" href="https://use.typekit.net/kaw7vqd.css">
-    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
-    <script src="scripts/general.js" type="text/javascript"></script>
-    <script src="scripts/video-player.js" type="text/javascript"></script>
-    <script src="scripts/video-db.js" type="text/javascript"></script>
-    <script src="scripts/jquery.fittext.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/glitch.css">
-    <link rel="stylesheet" href="styles/videoStyles.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-</HEAD>
-<BODY>
+<?php 
+    $title = "Aversion Games";
+    $page = "home";
+    include 'includes/head.php'; 
+?>
 <div class="section hero customImageBackground" style="background-image: url('images/glass@2x.jpg'); background-position: center">
-    <header class="wrapper">
-        <div class="component">
-            <a href="index.html">
-                <p class="title headerTitle">
-                    <span><span>AV</span>ERSION</span>
-                    <span>GAMES</span>
-                </p>
-            </a>
-            <nav>
-                <a class="active" href="index.html">Home</a>
-<!--                <a href="#" class="expand">Titles</a>-->
-                    <a href="committed.html">Committed</a>
-                    <a href="admitted.html">Admitted</a>
-<!--
-                <span>
-                    <a href="committed.html">Committed</a>
-                    <a href="admitted.html">Admitted</a>
-                </span>    
--->
-                <a href="about.html">About</a>
-                <a href="bts.html">BTS</a>
-            </nav>
-        </div>
-    </header>
+    <?php include 'includes/nav.php'; ?>
     <div class="wrapper">
         <div class="wrapper">
             <div class="component">
@@ -90,24 +56,4 @@
         <div class="component large"></div>
     </div>
 </div>
-<footer class="section footer">
-    <div class="wrapper">
-        <div class="component">
-            <div style="align-self: center;">
-                <p class="credits">Designed by Adam Hoskin</p>
-                <p class="credits">Built by Jamie De Vivo</p>
-            </div>
-        </div>
-        <div class="component">
-            <p class="title"><span>AV</span>ERSION GAMES</p>
-        </div>
-        <div class="component">
-            <div style="align-self: center;">
-                <p class="quickLinks">Privacy Policy</p>
-                <p class="quickLinks">Our Youtube</p>
-            </div>
-        </div>
-    </div>
-</footer>
-</BODY>
-</HTML>
+<?php include 'includes/footer.php'; ?>
