@@ -468,7 +468,7 @@ var stages = [
                 flags_required: null,
                 
                 video_id: 38,
-                flags_set: null,
+                flags_set: ['death'],
                 
                 next_stage: null
             },
@@ -479,7 +479,7 @@ var stages = [
                 flags_required: null,
                 
                 video_id: 39,
-                flags_set: null,
+                flags_set: ['survived'],
                 
                 next_stage: null
             }
