@@ -491,151 +491,181 @@ var videos = [
     {
         video_id:0,
         source:'film/1-1s.mp4',
+        manifest:'film/1-1s/1-1s-manifest.mpd',
         blob: null
     },
     {
         video_id:1,
         source:'film/1s.mp4',
+        manifest:'film/1s/1s-manifest.mpd',
         blob: null
     },
     {
         video_id:2,
         source:'film/1s-2-2s.mp4',
+        manifest:'film/1s-2-2s/1s-2-2s-manifest.mpd',
         blob: null
     },
     {
         video_id:3,
         source:'film/2s.mp4',
+        manifest:'film/2s/2s-manifest.mpd',
         blob: null
     },
     {
         video_id:4,
         source:'film/2s-2.1-2.1s.mp4',
+        manifest:'film/2s-2.1-2.1s/2s-2.1-2.1s-manifest.mpd',
         blob: null
     },
     {
         video_id:5,
         source:'film/2.1s.mp4',
+        manifest:'film/2.1s/2.1s-manifest.mpd',
         blob: null
     },
     {
         video_id:6,
         source:'film/2.1s-3-3s.mp4',
+        manifest:'film/2.1s-3-3s/2.1s-3-3s-manifest.mpd',
         blob: null
     },
     {
         video_id:7,
         source:'film/3s.mp4',
+        manifest:'film/3s/3s-manifest.mpd',
         blob: null
     },
     {
         video_id: 8,
         source:'film/3s-3a-5-5s.mp4',
+        manifest:'film/3s-3a-5-5s/3s-3a-5-5s-manifest.mpd',
         blob: null
     },
     {
         video_id: 9,
         source:'film/3s-3b-5-5s.mp4',
+        manifest:'film/3s-3b-5-5s/3s-3b-5-5s-manifest.mpd',
         blob: null
     },
     {
         video_id: 10,
         source:'film/2.1s-4-4s.mp4',
+        manifest:'film/2.1s-4-4s/2.1s-4-4s-manifest.mpd',
         blob: null
     },
     {
         video_id: 11,
         source:'film/4s.mp4',
+        manifest:'film/4s/4s-manifest.mpd',
         blob: null
     },
     {
         video_id: 12,
         source:'film/4s-4a-5-5s.mp4',
+        manifest:'film/4s-4a-5-5s/4s-4a-5-5s-manifest.mpd',
         blob: null
     },
     {
         video_id: 13,
         source:'film/4s-4b-5-5s.mp4',
+        manifest:'film/4s-4b-5-5s/4s-4b-5-5s-manifest.mpd',
         blob: null
     },
     {
         video_id: 14,
         source:'film/5s.mp4',
+        manifest:'film/5s/5s-manifest.mpd',
         blob: null
     },
     {
         video_id: 15,
         source:'film/5s-5a-6-6s.mp4',
+        manifest:'film/5s-5a-6-6s/5s-5a-6-6s-manifest.mpd',
         blob: null
     },
     {
         video_id: 16,
         source:'film/5s-5b-6-6s.mp4',
+        manifest:'film/5s-5b-6-6s/5s-5b-6-6s-manifest.mpd',
         blob: null
     },
     {
         video_id: 17,
         source:'film/6s.mp4',
+        manifest:'film/6s/6s-manifest.mpd',
         blob: null
     },
     {
         video_id: 18,
         source:'film/6s-7-7s.mp4',
+        manifest:'film/6s-7-7s/6s-7-7s-manifest.mpd',
         blob: null
     },
     {
         video_id: 19,
         source:'film/7s.mp4',
+        manifest:'film/7s/7s-manifest.mpd',
         blob: null
     },
     {
         video_id: 20,
         source:'film/7s-7a-9-10s.mp4',
+        manifest:'film/7s-7a-9-10s/7s-7a-9-10s-manifest.mpd',
         blob: null
     },
     {
         video_id: 21,
         source:'film/7s-7b-9-10s.mp4',
+        manifest:'film/7s-7b-9-10s/7s-7b-9-10s-manifest.mpd',
         blob: null
     },
     {
         video_id: 22,
         source:'film/6s-8-8s.mp4',
+        manifest:'film/6s-8-8s/6s-8-8s-manifest.mpd',
         blob: null
     },
     {
         video_id: 23,
         source:'film/8s.mp4',
+        manifest:'film/8s/8s-manifest.mpd',
         blob: null
     },
     {
         video_id: 24,
         source:'film/8s-8a-9-10s.mp4',
+        manifest:'film/8s-8a-9-10s/8s-8a-9-10s-manifest.mpd',
         blob: null
     },
     {
         video_id: 25,
         source:'film/8s-8b-9-10s.mp4',
+        manifest:'film/8s-8b-9-10s/8s-8b-9-10s-manifest.mpd',
         blob: null
     },
     {
         video_id: 26,
         source:'film/10s.mp4',
+        manifest:'film/10s/10s-manifest.mpd',
         blob: null
     },
     {
         video_id: 27,
         source:'film/10s-10.mp4',
+        manifest:'film/10s-10/10s-10-manifest.mpd',
         blob: null
     },
     {
         video_id: 28,
         source:'film/11s.mp4',
+        manifest:'film/11s/11s-manifest.mpd',
         blob: null
     },
     {
         video_id: 29,
         source:'film/11x.mp4',
+        manifest:'film/11x/11x-manifest.mpd',
         moment_id:8,
         start: false,
         end: false,
@@ -644,51 +674,61 @@ var videos = [
     {
         video_id: 30,
         source:'film/11y.mp4',
+        manifest:'film/11y/11y-manifest.mpd',
         blob: null
     },
     {
         video_id: 31,
         source:'film/11z.mp4',
+        manifest:'film/11z/11z-manifest.mpd',
         blob: null
     },
     {
         video_id: 32,
         source:'film/11zalt.mp4',
+        manifest:'film/11zalt/11zalt-manifest.mpd',
         blob: null
     },
     {
         video_id: 33,
         source:'film/12s.mp4',
+        manifest:'film/12s/12s-manifest.mpd',
         blob: null
     },
     {
         video_id: 34,
         source:'film/12x.mp4',
+        manifest:'film/12x/12x-manifest.mpd',
         blob: null
     },
     {
         video_id: 35,
         source:'film/12y.mp4',
+        manifest:'film/12y/12y-manifest.mpd',
         blob: null
     },
     {
         video_id: 36,
         source:'film/12z.mp4',
+        manifest:'film/12z/12z-manifest.mpd',
         blob: null
     },
     {
         video_id: 37,
         source:'film/13s.mp4',
+        manifest:'film/13s/13s-manifest.mpd',
         blob: null
     },
     {
         video_id: 38,
         source:'film/13y.mp4',
+        manifest:'film/13y/13y-manifest.mpd',
         blob: null
     },
     {
         video_id: 39,
         source:'film/13z.mp4',
+        manifest:'film/13z/13z-manifest.mpd',
         blob: null
     }
 ];

@@ -22,13 +22,13 @@
 </div>
 <div class="section">
 <!--    <div id="videoPlayerContainer">-->
-    <video data-dashjs-player autoplay src="http://committed.devivo.co.uk/test/config.mpd" muted="muted" controls></video>
-<!--
-        <video data-dashjs-player loop="true" autoplay="true" >
-            <source src="https://committed.devivo.co.uk/film/1-1s/1-1s.mpd" type="application/dash+xml">
+<!--    <video data-dashjs-player autoplay src="http://committed.devivo.co.uk/test2/config.mpd" muted="muted" controls></video>-->
+    <div class="testContainer">
+        <video class="videoPlayer" muted="muted" controls loop="true">
+<!--            <source src="http://committed.devivo.co.uk/test/config.mpd" type="application/dash+xml">-->
         </video>
--->
 <!--    </div>-->
+    </div>
 </div>
 <div class="section customImageBackground padded" style="background-image: url('images/exploreAndEscape.png');">
     <div class="wrapper">

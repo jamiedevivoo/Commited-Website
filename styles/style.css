@@ -228,6 +228,7 @@ button:focus {outline:0;}
         }
         .component h2, .component p {
             z-index: 1;
+/*            display: inline;*/
         }
         .component.mini {
             min-width: 300px;

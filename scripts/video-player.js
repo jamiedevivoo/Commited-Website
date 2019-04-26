@@ -1,3 +1,136 @@
+//function initApp() {
+//  // Install built-in polyfills to patch browser incompatibilities.
+//  shaka.polyfill.installAll();
+//
+//  // Check to see if the browser supports the basic APIs Shaka needs.
+//  if (shaka.Player.isBrowserSupported()) {
+//    // Everything looks good!
+//    initPlayer();
+//  } else {
+//    // This browser does not have the minimum set of APIs we need.
+//    console.error('Browser not supported!');
+//  }
+//}
+//
+//
+//
+//function initPlayer() {
+//    // Create a Player instance.
+//    var videoPlayer = document.getElementById('videoPlayer');
+//    var player = new shaka.Player(videoPlayer);
+//
+//    // Attach player to the window to make it easy to access in the JS console.
+//    window.player = player;
+//
+//    // Listen for error events.
+//    player.addEventListener('error', onErrorEvent);
+//
+//    // Try to load a manifest.
+//    // This is an asynchronous process.
+//    var mpdUrl = videos[0].manifest;
+//    var estimator = new shaka.util.EWMABandwidthEstimator();
+//    var source = new shaka.player.DashVideoSource(mpdUrl, null, estimator);
+//    player.load(source).then(function() {
+//        // This runs if the asynchronous load is successful.
+//        console.log('The video has now been loaded!');
+//    }).catch(onError);  // onError is executed if the asynchronous load fails.
+//    }
+//
+//function onErrorEvent(event) {
+//  // Extract the shaka.util.Error object from the event.
+//  onError(event.detail);
+//}
+//
+//function onError(error) {
+//  // Log the error.
+//  console.error('Error code', error.code, 'object', error);
+//}
+//
+//document.addEventListener('DOMContentLoaded', initApp);
+
+var currentStage;
+var videoContainer = $("div.testContainer").get(0);
+var videoPlayer = $("video.videoPlayer").get(0); 
+
+function initPlayer() {
+    console.log("init");
+    
+        for(var i=0; i < stages.length; i++) {
+        if (stages[i].is_start == true) {
+            loadStage(i);
+        }
+    }
+        
+    // get the first clip
+    // set up the choice
+    // is it a decision?
+        // yes
+            // get choice clip
+            // get the options for the clip
+        // No
+            // get the next clip
+    // set up players in the background
+    // play first clip
+}
+
+document.addEventListener('DOMContentLoaded', initPlayer);
+
+function loadStage(stageIndex) {
+    var stage = stages[stageIndex];
+    var initialVideoID = stage.video_id;
+    var initialVideo = videos[initialVideoID];
+    var initialVideoSrc = initialVideo.source;
+    var isStart = stage.is_start;
+    var isEnd = stage.is_end;
+    var isDecision = stage.decision;
+    var defaultOutcome = stage.defaultOutcome;
+    var timeout;
+    if (defaultOutcome == undefined) { timeout = false; } else {timeout = true;}
+    
+    console.log("loaded stage: ",stageIndex,", Start: ",isStart,", End: ",isEnd,", Decision: ",isDecision,", Timeout: ",timeout,", Default: ",defaultOutcome) 
+    
+    videoPlayer.src = initialVideoSrc;
+    loadOptions(stageIndex);
+//    if isDecision == true {
+//        if timeout == true
+//    }
+}
+
+function loadOptions(stageIndex) {
+    var stage = stages[stageIndex];
+    var options = stage.options;
+
+        for(var i=0; i < options.length; i++) {
+            var option = stage.options[i]
+            var optionVideoID = option.video_id;
+            var optionVideo = videos[optionVideoID];
+            var optionVideoSrc = optionVideo.source;
+            var optionVideoElement = document.createElement('video');
+                video.src = optionVideoSrc;
+                video.autoplay = false;
+                videoContainer.appendChild(video)
+        }
+}
+
+function createOverlay() {
+    // get titles for options
+    // position options
+}
+
+function showOverlay() {
+    
+}
+
+function videoPlaying() {
+    // Has video ended?
+    // 
+}
+
+function videoEnded() {
+    
+}
+
+
 $( document ).ready(function() {
     
     // Videos and Stages defined in video-db.js
@@ -11,7 +144,7 @@ $( document ).ready(function() {
 //            console.log(videos[video_id].source);
 //        }
 //    }
-//    
+    
 //    var xhr = new XMLHttpRequest();
 //    xhr.responseType = 'blob';
 //

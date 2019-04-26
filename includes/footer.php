@@ -17,11 +17,12 @@
         </div>
     </div>
 </footer>
-    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
-    <script src="scripts/general.js" type="text/javascript"></script>
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <script src="scripts/shaka-player.compiled.js"></script>
     <script src="scripts/jquery.fittext.js" type="text/javascript"></script>
-    <script src="scripts/video-player.js" type="text/javascript"></script>
     <script src="scripts/video-db.js" type="text/javascript"></script>
+    <script src="scripts/general.js" type="text/javascript"></script>
+    <script src="scripts/video-player.js" type="text/javascript"></script>
 </BODY>
 </HTML>
