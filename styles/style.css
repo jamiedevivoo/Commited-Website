@@ -2,7 +2,7 @@
     display: none; 
 }
 
-button:focus {outline:0;}
+button:focus, video:focus {outline:0;}
 
 /* BODY */
     body {

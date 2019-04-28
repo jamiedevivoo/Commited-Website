@@ -92,22 +92,31 @@
     height: 100%;
     transform: translateY(-50%);
 }
+    
+div#choiceSelection, div#interactiveLayer::before, div#interactiveLayer::after {
+    transition: all 1s ease-in-out;
+}
+    
 div#choiceSelection {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height:100%;
+    height:0%;
     opacity: 0;
     display: flex;
-    transition: all 1s ease-in-out;
     pointer-events: none;
+    transition-delay: 0s;
+    z-index: 1;
 }
 div#choiceSelection.active {
     opacity: 1;
+    height: 12.5%;
     pointer-events: all;
 }
 div#choiceSelection span.playerChoice {
     align-self: center;
+    padding: 3px 3px 0px 3px;
+    box-sizing: border-box;
     font-family: futura-pt, sans-serif;
     letter-spacing: 0.15em;
     font-size: 1em;
@@ -119,7 +128,8 @@ div#choiceSelection span.playerChoice {
     vertical-align: middle;
     line-height: 3em;
     opacity: 0.5;
-    transition: 0.2s ease-in-out;
+    transition: 0.4s ease-in-out;
+    transition-delay: 0s;
     border-bottom: black solid 2px;
     background-color: rgba(255,255,255,0.0);
 }
@@ -129,15 +139,38 @@ div#choiceSelection span.playerChoice:hover, div#choiceSelection span.playerChoi
     border-color: white;
     background-color: rgba(255,255,255,0.01);
 }
+
+div#choiceSelection span.playerChoice:hover::first-letter, div#choiceSelection span.playerChoice.selected::first-letter {
+    border-bottom: solid rgba(255,150,150,0.04) 2px;
+}
 #interactiveLayer {
+    overflow: hidden;
     position: absolute;
     z-index: 9;
     left: 0;
-    height: 60px;
+    height: 100%;
     bottom: 0;
-    height: 12.5%;
+    top: 0;
     right: 0;
-    width:100%;
+    width: 100%;
+}
+div#interactiveLayer::before, div#interactiveLayer::after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: block;
+    content: "";
+    height: 0%;
+    background-color: rgba(0,0,0,1);
+}
+div#interactiveLayer.bordered::after, div#interactiveLayer.bordered::before {
+    height: 12.5%;
+}
+div#interactiveLayer::before {
+    top: 0;
+}
+div#interactiveLayer::after {
+    bottom: 0;
 }
 body.filmLaunched {
     overflow: hidden;
@@ -150,8 +183,14 @@ body.filmLaunched {
     left: 0;
     right: 0;
     max-height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    transition-delay: 1s;
 }
-
+.filmPlayer.active { 
+    opacity: 1;
+    transition-delay: 0s;
+}
 .playerSplash {
     position: absolute;
     top: 0;
@@ -165,6 +204,13 @@ body.filmLaunched {
     justify-content: center;
     background-color: rgba(0,0,0,1);
     overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    transition-delay: 0.5s;
+}
+.filmContainer.active .playerSplash.show {
+	opacity: 1;
+    transition-delay: 0s;
 }
 
 .playerSplash > video {
@@ -183,11 +229,18 @@ body.filmLaunched {
     text-align: center;
     display: -webkit-box;
     margin: 0 auto;
-    opacity: 0.8;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+    transition-delay: 1s;
     margin-bottom: 1em;
+    border-radius: 50%;
+    padding: 2.5em 0;
 }
-.filmContainer.active .playerSplash div > video {
+.filmContainer.active .playerSplash.show div > video {
     width: 5em;
+    opacity: 0.8;
+    padding: 0em;
+    transition-delay: 0s;
 }
 .playerSplash h2, .playerSplash h4, .playerSplash p, .playerSplash button {
     z-index: 99;
@@ -204,7 +257,7 @@ body.filmLaunched {
     line-height: 1;
     font-size: 1.5em;
     width: 100%;
-    margin-top:25em;
+    margin-top:2.5em;
 }
 .playerSplash h4 {
     padding-top: 10px;

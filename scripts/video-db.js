@@ -19,7 +19,7 @@ var stages = [
                 flags_set: null,
                 
                 next_stage: 1
-            }
+            },
         ],
     },
     {
@@ -35,6 +35,17 @@ var stages = [
             {
                 option_index: 0,
                 title: "Pick Torch Up",
+                
+                flags_required: null,
+                
+                video_id: 2,
+                flags_set: null,
+                
+                next_stage: 2
+            },
+            {
+                option_index: 1,
+                title: "Dummy Test Option",
                 
                 flags_required: null,
                 

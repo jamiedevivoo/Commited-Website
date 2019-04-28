@@ -3,7 +3,7 @@
         <source src="media/house.mp4" type="video/mp4">
     </video>
     <div>
-        <video autoplay loop muted playsinline>
+        <video autoplay muted playsinline>
             <source src="media/voicemail.mp4" type="video/mp4">
         </video>
         <h2 class="title letter-Spacing committedTitle">You have a voicemail</h2>
@@ -14,7 +14,7 @@
 </div>
 <div class="filmPlayer">
     <div id="interactiveLayer" class="interactiveLayer">
-        <div id="choiceSelection" class="choiceSelection ">
+        <div id="choiceSelection" class="choiceSelection">
         </div>
     </div>
 </div>
