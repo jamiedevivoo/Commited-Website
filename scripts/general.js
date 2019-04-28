@@ -1,17 +1,22 @@
 $(document.body).ready(function() {
 
 //    jQuery("h2").fitText();
-    jQuery("h1").fitText();
+    jQuery("h1").fitText(0.8);
+    jQuery(".playerChoice").fitText(0.8);
     $(".glitch").each(function(i) {
         var titleText = $(this).text();
         $(this).attr("data-text",titleText);
     });
     function configureMobileView() {
-        if ($(window).height() > $(window).width()) {
+        // if ($(window).height() > $(window).width()) {
+        // if ($(".hero header.wrapper .component").width() > $(".hero h2.subtitle").width()) {
+          if ($(".hero header.wrapper .component").width() > (($(window).width() / 5) * 3)) {
             $(".hero header.wrapper .component").css("display","block");
+        }
+        if ($(window).height() > $(window).width()) {
             $(".section.hero").css("font-size","1.2em");
             if (window.devicePixelRatio >= 2) {
-//                $(".section.hero").css("font-size","1.5em");
+                $(".section.hero header").css("font-size","1.2em");
             }
         }
     }
@@ -97,13 +102,17 @@ $(document.body).ready(function() {
 //       }
 //    });
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
 
-function launchCommitted() {
-    $("#videoPlayerContainer").addClass("active");
-}
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
 
-$(document).keyup(function(e) {
-     if (e.key === "Escape") { // escape key maps to keycode `27`
-        $("#videoPlayerContainer").removeClass("active");
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
     }
-});
+};

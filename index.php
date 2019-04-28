@@ -15,7 +15,7 @@
         </div>
         <div class="wrapper">
             <div class="component">
-                <a href="committed.html">
+                <a href="committed.php">
                     <button class="primary_cta">SEE OUR LATEST RELEASE NOW</button>
                 </a>
             </div>

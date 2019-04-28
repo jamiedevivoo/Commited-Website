@@ -1,4 +1,4 @@
-#videoPlayerContainer {
+.filmContainer {
     display: block;
     position: fixed;
     transform-origin: 50% 50%;
@@ -12,14 +12,14 @@
     z-index: 9;
     opacity: 0;
 }
-#videoPlayerContainer.active {
+.filmContainer.active {
     opacity: 1;
     top:0;
     bottom:0;
     right: 0;
     left: 0;
 }
-#videoPlayerContainer::after {
+.filmContainer::after {
     position: absolute;
     top:0;
     right:0;
@@ -30,11 +30,13 @@
     color: white;
     font-size: 12px;
 }
-        #videoPlayerContainer video {
+        .filmContainer .filmPlayer video {
             position: absolute;
-            top:0;
+            top: 50%;
+            transform: translateY(-50%);
             width: 100%;
-            left:0;
+            left: 0;
+            max-height: 100%;
         } 
         .livePlayer {
             display: block;
@@ -83,3 +85,137 @@
             top: 50%;
             transform: translate(-50%,-50%);
         }
+.playerContainer {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translateY(-50%);
+}
+div#choiceSelection {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height:100%;
+    opacity: 0;
+    display: flex;
+    transition: all 1s ease-in-out;
+    pointer-events: none;
+}
+div#choiceSelection.active {
+    opacity: 1;
+    pointer-events: all;
+}
+div#choiceSelection span.playerChoice {
+    align-self: center;
+    font-family: futura-pt, sans-serif;
+    letter-spacing: 0.15em;
+    font-size: 1em;
+    cursor: pointer;
+    font-weight: 100;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    vertical-align: middle;
+    line-height: 3em;
+    opacity: 0.5;
+    transition: 0.2s ease-in-out;
+    border-bottom: black solid 2px;
+    background-color: rgba(255,255,255,0.0);
+}
+div#choiceSelection span.playerChoice:hover, div#choiceSelection span.playerChoice.selected {
+    opacity: 1;
+    font-weight: 400;
+    border-color: white;
+    background-color: rgba(255,255,255,0.01);
+}
+#interactiveLayer {
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    height: 60px;
+    bottom: 0;
+    height: 12.5%;
+    right: 0;
+    width:100%;
+}
+body.filmLaunched {
+    overflow: hidden;
+}
+.filmPlayer {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 56vw;
+    left: 0;
+    right: 0;
+    max-height: 100%;
+}
+
+.playerSplash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,1);
+    overflow: hidden;
+}
+
+.playerSplash > video {
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
+    position: absolute;
+    opacity: 0.05;
+    transition: all 0.5s;
+}
+.playerSplash div {
+    
+}
+.playerSplash div > video {
+    width: 0em;
+    text-align: center;
+    display: -webkit-box;
+    margin: 0 auto;
+    opacity: 0.8;
+    margin-bottom: 1em;
+}
+.filmContainer.active .playerSplash div > video {
+    width: 5em;
+}
+.playerSplash h2, .playerSplash h4, .playerSplash p, .playerSplash button {
+    z-index: 99;
+    position: relative;
+    display: block;
+    text-align: center;
+    max-width: 100%;
+    margin: 0 auto;
+    color: white;
+}
+.playerSplash button {
+    background: rgba(143, 9, 10, 1);
+    padding: 1em;
+    line-height: 1;
+    font-size: 1.5em;
+    width: 100%;
+    margin-top:25em;
+}
+.playerSplash h4 {
+    padding-top: 10px;
+} 
+.playerSplash p {
+    padding-top: 20px;
+} 
+
+.filmPlayer video {
+    transition: all 0.5s;
+}
+.filmPlayer video.queued {
+    display: none;
+}

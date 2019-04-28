@@ -1,116 +1,469 @@
-//function initApp() {
-//  // Install built-in polyfills to patch browser incompatibilities.
-//  shaka.polyfill.installAll();
-//
-//  // Check to see if the browser supports the basic APIs Shaka needs.
-//  if (shaka.Player.isBrowserSupported()) {
-//    // Everything looks good!
-//    initPlayer();
-//  } else {
-//    // This browser does not have the minimum set of APIs we need.
-//    console.error('Browser not supported!');
-//  }
-//}
-//
-//
-//
-//function initPlayer() {
-//    // Create a Player instance.
-//    var videoPlayer = document.getElementById('videoPlayer');
-//    var player = new shaka.Player(videoPlayer);
-//
-//    // Attach player to the window to make it easy to access in the JS console.
-//    window.player = player;
-//
-//    // Listen for error events.
-//    player.addEventListener('error', onErrorEvent);
-//
-//    // Try to load a manifest.
-//    // This is an asynchronous process.
-//    var mpdUrl = videos[0].manifest;
-//    var estimator = new shaka.util.EWMABandwidthEstimator();
-//    var source = new shaka.player.DashVideoSource(mpdUrl, null, estimator);
-//    player.load(source).then(function() {
-//        // This runs if the asynchronous load is successful.
-//        console.log('The video has now been loaded!');
-//    }).catch(onError);  // onError is executed if the asynchronous load fails.
-//    }
-//
-//function onErrorEvent(event) {
-//  // Extract the shaka.util.Error object from the event.
-//  onError(event.detail);
-//}
-//
-//function onError(error) {
-//  // Log the error.
-//  console.error('Error code', error.code, 'object', error);
-//}
-//
-//document.addEventListener('DOMContentLoaded', initApp);
+//document.addEventListener('DOMContentLoaded', initPlayer);
 
-var currentStage;
-var videoContainer = $("div.testContainer").get(0);
-var videoPlayer = $("video.videoPlayer").get(0); 
+var body = document.getElementsByTagName("body")[0];
+  
+// Player Object
+var player = {
+    
+    // REFERENCES & MEMORY
+    initialised: false,
+    currentStage: {
+        id: null,
+        video_id: null,
+
+        is_start: null,
+        is_end: null,
+
+        decision:null,
+        default_outcome: null
+    },
+    availableOptions: [
+        {
+            option_index: null,
+            title: null,
+
+            flags_required: null,
+
+            video_id: null,
+            flags_set: null,
+
+            next_stage: null
+        }
+    ],
+    selectedOption: null,
+    activeVideo: {
+        id: null,
+        type: null      
+    },
+    queue: [
+        {
+            element: null,
+            video_id: null
+        }
+    ],
+    flags: [],
+        
+    // GETTERS
+    get container() {
+        return document.querySelector("div.filmContainer");
+    },
+    get player() {
+        return this.container.querySelector("div.filmPlayer");
+    },    
+    get interactiveLayer() {
+        return this.player.querySelector("#interactiveLayer");
+    },    
+    get choiceDock() {
+        return this.player.querySelector("#choiceSelection");
+    },
+    get allChoices() {
+        return this.choiceDock.getElementsByClassName("playerChoice");
+    },    
+    get currentChoice() {
+        return this.choiceDock.querySelector(".playerChoice.selected");
+    },
+    get currentChoiceIndex() {    
+        var allChoices = player.allChoices;
+        for(var i=0; i < allChoices.length; i++) {
+            if ($(allChoices[i]).hasClass("selected")) {
+                return i;
+                }
+            }
+    },
+    get bindedVideos() {
+        return this.player.getElementsByTagName("video");
+    },
+    get bindedVideoWithEarliestStage() {   
+        var queue = player.bindedVideos,        
+            earliestStage = null,
+            stageToBeReturned = null;
+        for(var i=0; i < queue.length; i++) {
+            var stage = queue[i].getAttribute("data-stageid");
+            
+            if ((earliestStage === null) || (stage < earliestStage)) {
+                earliestStage = stage;
+                stageToBeReturned = queue[i];
+            }
+        }
+        return stageToBeReturned;
+    },
+    get activeBindedVideo() {    
+        var queue = player.bindedVideos;
+        for(var i=0; i < queue.length; i++) {
+            if ($(queue[i]).hasClass("active")) {
+                return queue[i];
+            }
+        }
+    },
+    get nextVideo() {
+        return this.queue[0];
+    },
+}
+
+
+
+
+
+function launchCommitted() {
+    console.log("Launching Player");
+    
+    if (player.container == null || player.initialised == false) {
+        console.log("Player Doesn't Exist");
+        createPlayer();
+    }
+    
+    $(player.container).addClass("active");
+    $(body).addClass("filmLaunched");
+
+    if (history.pushState) {
+          var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?state=launchedCommitted';
+          window.history.pushState({path:newurl},'',newurl);
+    }
+    $(player.player).focus();
+}
+
+
+
+
+
+function exitCommitted() {
+    console.log("Exiting Player");
+    
+    $(player.container).removeClass("active");    
+    $(body).removeClass("filmLaunched");
+    
+    if (history.pushState) {
+          var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?state=exitedCommitted';
+          window.history.pushState({path:newurl},'',newurl);
+    }
+}
+
+
+
+
+
+function createPlayer() {
+    console.log("Creating Player");
+    
+    if (player.container == null) {
+        var filmContainer = document.createElement('div');
+        $(filmContainer).addClass("filmContainer")
+        filmContainer.setAttribute("data-playerInitialised",false);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log("Player Created");
+                filmContainer.innerHTML = this.responseText;
+                body.appendChild(filmContainer);
+                launchCommitted();
+                initPlayer();
+            }
+        };
+        xhttp.open("GET", "filmPlayer.php", true);
+        xhttp.send();
+    }
+}
+
+
 
 function initPlayer() {
-    console.log("init");
+    console.log("Initialising Player");
     
-        for(var i=0; i < stages.length; i++) {
+    for(var i=0; i < stages.length; i++) {
         if (stages[i].is_start == true) {
             loadStage(i);
         }
     }
-        
-    // get the first clip
-    // set up the choice
-    // is it a decision?
-        // yes
-            // get choice clip
-            // get the options for the clip
-        // No
-            // get the next clip
-    // set up players in the background
-    // play first clip
+    
+    player.container.setAttribute("data-playerInitialised",true);
+    player.initialised = true;
+    player.player
 }
 
-document.addEventListener('DOMContentLoaded', initPlayer);
+
+
 
 function loadStage(stageIndex) {
     var stage = stages[stageIndex];
     var initialVideoID = stage.video_id;
     var initialVideo = videos[initialVideoID];
-    var initialVideoSrc = initialVideo.source;
     var isStart = stage.is_start;
     var isEnd = stage.is_end;
     var isDecision = stage.decision;
-    var defaultOutcome = stage.defaultOutcome;
+    var defaultOutcome = stage.default_outcome;
     var timeout;
-    if (defaultOutcome == undefined) { timeout = false; } else {timeout = true;}
     
-    console.log("loaded stage: ",stageIndex,", Start: ",isStart,", End: ",isEnd,", Decision: ",isDecision,", Timeout: ",timeout,", Default: ",defaultOutcome) 
+    if (defaultOutcome == undefined || defaultOutcome == null) { timeout = false; } else {timeout = true;}
     
-    videoPlayer.src = initialVideoSrc;
-    loadOptions(stageIndex);
-//    if isDecision == true {
-//        if timeout == true
-//    }
+    console.log(stageIndex+".x", " loaded stage: ",stageIndex,"videoId: ",initialVideoID,", Start: ",isStart,", End: ",isEnd,", Decision: ",isDecision,", Timeout: ",timeout,", Default: ",defaultOutcome);
+    queuePlayer(videos[initialVideoID],undefined,stage);
+        
+    if (isDecision == true) {
+        loadOptions(stageIndex);
+    } else if (isDecision == false) {
+        var defaultOption = stage.options[defaultOutcome];
+        var nextStage = defaultOption.next_stage;
+        loadStage(nextStage);
+    }
+    
 }
+
+
+
+
 
 function loadOptions(stageIndex) {
     var stage = stages[stageIndex];
-    var options = stage.options;
+    var options = stage.outcome;
 
         for(var i=0; i < options.length; i++) {
-            var option = stage.options[i]
-            var optionVideoID = option.video_id;
-            var optionVideo = videos[optionVideoID];
-            var optionVideoSrc = optionVideo.source;
-            var optionVideoElement = document.createElement('video');
-                video.src = optionVideoSrc;
-                video.autoplay = false;
-                videoContainer.appendChild(video)
+            var option = stage.outcome[i]
+            var optionVideo = videos[option.video_id];
+            
+            console.log(stageIndex+"."+i," loaded option: ",i,", Video ID: ",optionVideo.video_id,", optionVideo: ",optionVideo,", optionVideoSrc: ",optionVideo.source);
+            
+            // Create and add Choice
+            var playerChoice = document.createElement('span');
+                playerChoice.innerHTML = option.title;
+                $(playerChoice).addClass("playerChoice");
+                playerChoice.setAttribute("data-optionIndex",option.option_index);
+            
+            var dock = player.choiceDock;
+                dock.appendChild(playerChoice);
+            console.log("Added Choice for: ",option.title);
+                        
+            // Create and add Video
+            queuePlayer(optionVideo,option,stage);
         }
 }
+
+
+
+
+
+function queuePlayer(video, option, stage) {
+    
+    // Check if video is already in the queue
+    var exists;
+    for(exists = false, i = 0; i < player.bindedVideos.length && exists == false; i++) {
+        if (player.bindedVideos[i].getAttribute("data-videoid") == video.video_id) {
+            console.log("Video is already in the queue");
+            exists = true;
+            break;
+        }
+    }
+    
+    // If it isn't already in the queue, create the new video
+    if (exists == false) {
+        var videoElement = document.createElement('video');
+            videoElement.src = video.source;
+            videoElement.controls = false;
+            videoElement.setAttribute("data-videoID",video.video_id);
+            $(videoElement).addClass("queued");
+        
+            videoElement.setAttribute("data-videoID",video.video_id);
+        
+            if (typeof stage !== 'undefined') {
+                videoElement.setAttribute("data-stageID",stage.stage_id);
+                if (stage.decision == true && stage.video_id == video.video_id) {
+                    videoElement.setAttribute("loop","loop");
+                    videoElement.setAttribute("data-videoType","decision");
+                } else {
+                    videoElement.setAttribute("data-videoType","static");
+                }
+            }
+            if (typeof option !== 'undefined') {
+                videoElement.setAttribute("data-optionID",option.option_index);
+                videoElement.setAttribute("data-videoType","option");
+                videoElement.setAttribute("data-nextVideo",option.next_stage);
+            }
+        
+        // Add the new video to the page
+        var filmPlayer = player.player;
+        filmPlayer.appendChild(videoElement);
+        console.log("Created Video for: ",video.video_id);
+    }
+}
+
+
+
+
+
+
+
+function highlightChoice(choice) {
+    var newChoice = player.allChoices[choice];
+    console.log("highlighting choice: ",newChoice)
+    $(".playerChoice").removeClass("selected"); 
+    $(newChoice).addClass("selected"); 
+}
+
+
+
+
+function navigateOptions(direction) {
+    var currentChoiceIndex = player.currentChoiceIndex;
+    var allChoices = player.allChoices;
+    console.log("currentChoice: ",currentChoiceIndex);
+    
+    if (typeof currentChoiceIndex == "undefined") {
+        console.log("Current Choice Undefined, setting to 0");
+        currentChoiceIndex = 0;
+    }
+    
+    var newChoice;
+    switch (direction) {
+        case "left":
+            console.log("left");
+            newChoice = currentChoiceIndex - 1;
+            break;
+        case "right":
+            console.log("right");
+            newChoice = currentChoiceIndex + 1;
+            break;
+        default:
+            newChoice = 0;
+    }
+    console.log("New Choice: ",newChoice);
+    
+    if (newChoice < 0) {
+        newChoice = allChoices.length -1;
+        console.log("Choice is under 0, setting to: ", newChoice);
+    } 
+    if (newChoice > allChoices.length -1) {
+        newChoice = 0;
+        console.log("Choice is over max length, (",allChoices.length,") setting to: ", newChoice);
+    }
+    highlightChoice(newChoice);
+}
+
+
+
+
+
+function startFilm() {
+    $(".playerSplash").fadeOut('slow',function() {
+        $(".playerSplash").remove();
+        
+        var filmContainer = $(player.container);
+            if(filmContainer.requestFullscreen) {
+                filmContainer.requestFullscreen();
+            }
+            else if(filmContainer.mozRequestFullScreen) {
+                filmContainer.mozRequestFullScreen();
+            }
+            else if(filmContainer.webkitRequestFullscreen) {
+                filmContainer.webkitRequestFullscreen();
+            }
+            else if(filmContainer.msRequestFullscreen) {
+                filmContainer.msRequestFullscreen();
+            }
+        
+        startVideo(player.bindedVideoWithEarliestStage);
+        $(".filmPlayer").fadeIn('slow');
+    });
+}
+
+
+
+// Bind Events
+function bindInteractionEvents() { 
+    
+    var allChoices = player.allChocies;
+    console.log(allChoices);
+    for(var i=0; i < allChocies.length; i++) {
+        $(allChoices[i]).click(function() {
+                var choiceIndex = $(this).getAttribute("data-optionindex");
+                highlightChoice(choiceIndex);
+                console.log("click on choice");
+        });
+
+       $(allChoices[i]).hover(
+            function() {
+                console.log(this);
+                var choiceIndex = $(this).getAttribute("data-optionindex");
+                highlightChoice(choiceIndex);
+                console.log("hover on choice");
+            }, function() {
+            }
+        );
+    }
+
+    $(document).keyup(function(e) {
+        console.log("key pressed");
+        switch (e.keyCode) {
+            case 27: // Escape
+                exitCommitted()
+                break;
+            case 37: // Left Arrow
+                navigateOptions("left");
+                break;
+            case 39: // Right Arrow
+                navigateOptions("right");
+                break;
+            case 13: // Enter
+                console.log("Enter");
+                break;
+            case 9: // Tab
+                navigateOptions("right");
+                break;
+        }
+    });
+
+}
+
+
+function nextVideo() {
+    
+}
+
+
+
+function bindVideoEvents() {
+    console.log($(".filmPlayer video"));
+    
+   $(player.activeVideoInQueue).on('ended', function() {
+       var videoType = this.getAttribute("data-videotype");
+       var stageID = this.getAttribute("data-stageid");
+       var stage = stages[stageID];
+       console.log("End: ",stage);
+
+        if (stage.is_end !==true) {
+            console.log("This isn't the end, load next video");
+            if (videoType == "option") {
+//                var nextVideo = 
+                startVideo();
+            }
+        } else {
+            player.activeVideoInQueue.element.pause();
+        }
+    });
+    
+}
+
+
+
+
+
+function startVideo(videoTag) {
+    var stageID = videoTag.getAttribute("data-stageid");
+    if (stages[stageID].decision == true) {
+        var dock = player.choiceDock;
+        $(dock).addClass("active");
+    } else {
+        $(dock).removeClass("active");
+    }
+    videoTag.play();
+    $(videoTag).addClass("active");
+    $(videoTag).removeClass("queued");  
+    bindVideoEvents()
+    bindInteractionEvents()
+}
+
+
+
+
 
 function createOverlay() {
     // get titles for options
@@ -135,12 +488,12 @@ $( document ).ready(function() {
     
     // Videos and Stages defined in video-db.js
 //    var flags = [];
-//    var videoPlayer = $("video.videoplayer").get(0);
+//    var filmPlayer = $("div.filmPlayer video").get(0);
 //    
 //    for(var i=0; i < stages.length; i++) {
 //        if (stages[i].is_start == true) {
 //            var video_id = stages[i].video_id;
-//            videoPlayer.src = videos[video_id].source;
+//            filmPlayer.src = videos[video_id].source;
 //            console.log(videos[video_id].source);
 //        }
 //    }
@@ -162,7 +515,7 @@ $( document ).ready(function() {
 //          var byteArray = new Uint8Array(byteNumbers);
 //          var blob = new Blob([byteArray], {type: 'video/ogg'});
 //          var url = URL.createObjectURL(blob);
-//          videoPlayer.src = url;
+//          filmPlayer.src = url;
 //      }
 //      reader.readAsDataURL(xhr.response);
 //    };
@@ -184,7 +537,7 @@ $( document ).ready(function() {
 
     
 //    // VARIABLES
-//    var videoPlayer = $("video.videoplayer").get(0),
+//    var filmPlayer = $("video.filmPlayer").get(0),
 //        user_choice = null,
 //        current_video;
 //        
@@ -231,12 +584,12 @@ $( document ).ready(function() {
 //        function videoLoad(video_id) {
 //            moment_id = videos[video_id].moment_id;
 //            if (videos[video_id].blob) {
-//                videoPlayer.src = videos[video_id].blob;
+//                filmPlayer.src = videos[video_id].blob;
 //            } else {
 //                console.log("Blob doesn't exist, loading source.");
-//                videoPlayer.src = videos[video_id].source;
+//                filmPlayer.src = videos[video_id].source;
 //            }
-//            videoPlayer.play();
+//            filmPlayer.play();
 //            user_choice = null;
 //            current_video = video_id;
 //            
@@ -260,11 +613,11 @@ $( document ).ready(function() {
 //                        interactiveLayer.appendChild(option)
 //                    }
 //                }
-//                videoPlayer.ontimeupdate = function() {
+//                filmPlayer.ontimeupdate = function() {
 //                    timeCheckVideo(moment_id);
 //                }
 //            } else {
-//                videoPlayer.ontimeupdate = function() {
+//                filmPlayer.ontimeupdate = function() {
 //                    console.log("no time checks");
 //                }
 //            }
@@ -277,15 +630,15 @@ $( document ).ready(function() {
 //            var timeout = moments[moment_id].timeout;
 //            
 //            console.log(moment_start,moment_end, timeout);
-//            if (videoPlayer.currentTime > moment_start && user_choice === null) {
+//            if (filmPlayer.currentTime > moment_start && user_choice === null) {
 //                console.log("video player passed moment start.");
 //                $('.hotspot').css({'display':'block'});
 //            }
 //            
-//            if (videoPlayer.currentTime > moment_end && user_choice === null) {
+//            if (filmPlayer.currentTime > moment_end && user_choice === null) {
 //                if (timeout === false) {
 //                    console.log("video player passed moment end. Timeout: False.");
-//                    videoPlayer.currentTime = moment_start;
+//                    filmPlayer.currentTime = moment_start;
 //                } else {
 //                    console.log("video player passed moment end. Timeout: True.");
 //                    $('.hotspot').css({'display':'none'});
@@ -295,46 +648,5 @@ $( document ).ready(function() {
 //            }
 //        }
 //        
-//        // TRIGGERS
-//        
-//        $('#videoButton.play').click(function() {
-//            videoPlayerContainer = $("#videoPlayerContainer").get(0);
-//            if(videoPlayerContainer.requestFullscreen) {
-//                videoPlayerContainer.requestFullscreen();
-//            }
-//            else if(videoPlayerContainer.mozRequestFullScreen) {
-//                videoPlayerContainer.mozRequestFullScreen();
-//            }
-//            else if(videoPlayerContainer.webkitRequestFullscreen) {
-//                videoPlayerContainer.webkitRequestFullscreen();
-//            }
-//            else if(videoPlayerContainer.msRequestFullscreen) {
-//                videoPlayerContainer.msRequestFullscreen();
-//            }
-//            $('#videoButton.play').hide();
-//            videoLoad(0);
-//            
-//            console.log("Play clicked. Requesting full screen and loading video: 0");
-//        });
-//        
-//        $('#interactiveLayer').on("click", ".hotspot", function(){
-//            user_choice = $(this).attr("data-targetVideo");
-//            $('.hotspot').css({'display':'none'});
-//            console.log("User selected choice: "+user_choice);
-//            $('.hotspot').remove();
-//        });
-//        
-//        $('video.videoPlayer').on('ended', function() {
-//            if (videos[current_video].end !==true) {
-//                console.log("This isn't the end, load next video");
-//                videoLoad(user_choice);
-//                console.log("video ended. now player: "+user_chioce);
-//            } else {
-//                $('#videoButton.play').show();
-//                console.log('THE END');
-//            videoPlayer.src = videos[0].blob;
-//                videoPlayer.pause();
-//            }
-//        });
         
     });

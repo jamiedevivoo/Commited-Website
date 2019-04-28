@@ -20,16 +20,6 @@
         </div>
     </div>
 </div>
-<div class="section">
-<!--    <div id="videoPlayerContainer">-->
-<!--    <video data-dashjs-player autoplay src="http://committed.devivo.co.uk/test2/config.mpd" muted="muted" controls></video>-->
-    <div class="testContainer">
-        <video class="videoPlayer" muted="muted" controls loop="true">
-<!--            <source src="http://committed.devivo.co.uk/test/config.mpd" type="application/dash+xml">-->
-        </video>
-<!--    </div>-->
-    </div>
-</div>
 <div class="section customImageBackground padded" style="background-image: url('images/exploreAndEscape.png');">
     <div class="wrapper">
         <div class="component">
@@ -80,15 +70,6 @@
             <h2 class="letter-Spacing glitch scaleOnHover">SEDGLEY HOUSE</h2>
             <p>Set in an abandoned Boscombe complex you must navigate your way through the property and it's open plan layout. The property has been untouches for over a decade with it's aesthetic being all natural.</p>
         </div>
-    </div>
-</div>
-<div id="videoPlayerContainer">
-    <video id="video0" class="videoplayer livePlayer" autoplay>
-        <source src="" type="video/mp4">
-    </video>
-
-    <div id="interactiveLayer">
-        <div id="videoButton" class="play"></div>
     </div>
 </div>
 <?php include 'includes/footer.php'; ?>

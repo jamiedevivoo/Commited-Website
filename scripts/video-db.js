@@ -10,7 +10,7 @@ var stages = [
         default_outcome: 0,
         options: [
             {
-                index: 0,
+                option_index: 0,
                 title: null,
                 
                 flags_required: null,
@@ -33,7 +33,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Pick Torch Up",
                 
                 flags_required: null,
@@ -56,7 +56,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Pick Wallet Up",
                 
                 flags_required: null,
@@ -79,7 +79,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Corridor",
                 
                 flags_required: null,
@@ -90,7 +90,7 @@ var stages = [
                 next_stage: 4
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Living Room",
                 
                 flags_required: null,
@@ -113,7 +113,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Tap",
                 
                 flags_required: null,
@@ -124,7 +124,7 @@ var stages = [
                 next_stage: 5
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Dog Lead",
                 
                 flags_required: null,
@@ -147,12 +147,12 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: null,
                 
                 flags_required: null,
                 
-                video_id: 8,
+                video_id: null,
                 flags_set: null,
                 
                 next_stage: 6
@@ -170,7 +170,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Camera",
                 
                 flags_required: null,
@@ -181,7 +181,7 @@ var stages = [
                 next_stage: 7
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Drawer",
                 
                 flags_required: null,
@@ -204,7 +204,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Drawing",
                 
                 flags_required: null,
@@ -215,7 +215,7 @@ var stages = [
                 next_stage: 8
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Painting",
                 
                 flags_required: null,
@@ -238,7 +238,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Corridor",
                 
                 flags_required: null,
@@ -249,7 +249,7 @@ var stages = [
                 next_stage: 9
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Room",
                 
                 flags_required: null,
@@ -272,7 +272,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Floorboards",
                 
                 flags_required: null,
@@ -283,7 +283,7 @@ var stages = [
                 next_stage: 10
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Rope",
                 
                 flags_required: null,
@@ -306,7 +306,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Left Room",
                 
                 flags_required: null,
@@ -317,7 +317,7 @@ var stages = [
                 next_stage: 11
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Right Room",
                 
                 flags_required: null,
@@ -340,7 +340,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Enter",
                 
                 flags_required: null,
@@ -363,7 +363,7 @@ var stages = [
         default_outcome: 0,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Default",
                 
                 flags_required: null,
@@ -373,7 +373,7 @@ var stages = [
                 
                 next_stage: 13
             },            {
-                index: 1,
+                option_index: 1,
                 title: "Door",
                 
                 flags_required: null,
@@ -383,7 +383,7 @@ var stages = [
                 
                 next_stage: 13
             },            {
-                index: 2,
+                option_index: 2,
                 title: "Stairs",
                 
                 flags_required: ['lookedAtPainting'],
@@ -394,7 +394,7 @@ var stages = [
                 next_stage: 13
             },
             {
-                index: 3,
+                option_index: 3,
                 title: "Stairs",
                 
                 flags_required: ['lookedAtDrawing'],
@@ -417,7 +417,7 @@ var stages = [
         default_outcome: 0,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Default",
                 
                 flags_required: null,
@@ -428,7 +428,7 @@ var stages = [
                 next_stage: 14
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Help",
                 
                 flags_required: null,
@@ -439,7 +439,7 @@ var stages = [
                 next_stage: 14
             },
             {
-                index: 2,
+                option_index: 2,
                 title: "Leave",
                 
                 flags_required: null,
@@ -462,7 +462,7 @@ var stages = [
         default_outcome: null,
         outcome: [
             {
-                index: 0,
+                option_index: 0,
                 title: "Save",
                 
                 flags_required: null,
@@ -473,7 +473,7 @@ var stages = [
                 next_stage: null
             },
             {
-                index: 1,
+                option_index: 1,
                 title: "Leave",
                 
                 flags_required: null,

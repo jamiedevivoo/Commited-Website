@@ -127,10 +127,21 @@ button:focus {outline:0;}
         header + .wrapper {
             margin-top: 120px;
         }
+        
+        header * {
+            transition: all 0s;
+        }
         .hero header.wrapper nav {
             padding-top:10px;
-            display: block;
+            display: inline;
             z-index: 2;
+        }
+        .hero header.wrapper nav::before {
+            clear: both;
+            content: "";
+            position: relative;
+            display: block;
+            margin-top: 20px;
         }
         .hero header.wrapper nav a,
         .hero header.wrapper nav span a {
@@ -228,7 +239,6 @@ button:focus {outline:0;}
         }
         .component h2, .component p {
             z-index: 1;
-/*            display: inline;*/
         }
         .component.mini {
             min-width: 300px;
@@ -514,7 +524,9 @@ h2+div.wrapper {
     box-shadow: 0 5px 10px 2px rgba(0,0,0,0.25);
 }
        header .component {
-            transition: 0.5S all;
+            /*transition: 0.5S all;*/
+            max-width: unset;
+            margin: 20px;
         }
 @media screen and ( max-width: 600px ) { 
     button.primary_cta {
