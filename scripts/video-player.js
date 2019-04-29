@@ -31,9 +31,13 @@ var player = {
     currentStage: null,
     
     // Video
-    loadedVideos: [],
-    activeVideo: null, //id
-    nextVideo: null, //id
+    vObjects: {
+        all: [],
+        get pilot()     { return findObjectByKey(this.all, 'is_start', true);           },
+        get live()      { return findObjectByKey(this.all, 'currently_playing', true);  },
+        get queued()    { return findObjectByKey(this.all, 'queued', true);             },
+    },
+    
     availableOutcomes: [
         {
             option_index: null,
@@ -46,10 +50,11 @@ var player = {
 
             next_stage: null
         }
-    ],
+    ], 
 
     // Other
     flags: [],
+    restarts: 0,
         
     
     
@@ -59,6 +64,7 @@ var player = {
     // Significant Containers
     get container()         { return document.querySelector("div.filmContainer");       },
     get player()            { return this.container.querySelector("div.filmPlayer");    },    
+    get splash()            { return this.container.querySelector("playerSplash");      },    
     get interactiveLayer()  { return this.player.querySelector("#interactiveLayer");    },    
     get dock()              { return this.player.querySelector("#choiceSelection");     },
     
@@ -105,7 +111,7 @@ var player = {
         },
     },
     
-    
+
     
     
     
@@ -113,7 +119,7 @@ var player = {
     loadVideo: function(videoObject) {
         if (typeof videoObject !== 'undefined') {
             videoObject.e = createVideoElement(videoObject);
-            this.loadedVideos.push(videoObject);
+            this.vObjects.all.push(videoObject);
         }
     }
 }
@@ -299,6 +305,110 @@ function initPlayer(callback) {
 
 
 
+// ----------------------------------------------------------------------------------------- //
+// ######################################################################################### //
+// ############### --------------- Key One Time Functions --------------- ################## //
+// ######################################################################################### //
+
+
+
+
+
+// Start the Film
+function startFilm() {
+    
+    // Request Fullscreen
+    requestFullscreen();
+    
+    // Remove the Splash Screen    
+    $(".playerSplash").removeClass('show');
+    setTimeout(function(){
+        $(".playerSplash").remove();
+    }, 1500);
+
+    startVideo(player.vObjects.pilot);
+    
+    // Fade the player in
+    $(player.player).fadeIn('slow').addClass('active');
+    
+}
+
+
+
+
+
+
+
+
+
+
+// ------------------------------------------------------------------------------------------ //
+// ########################################################################################## //
+// ############### --------------- Key Continous Functions --------------- ################## //
+// ########################################################################################## //
+
+
+
+
+
+// Start the provided video
+function startVideo(videoObject) {
+    console.log("[Request to play Video:",videoObject.id,"] ... ");
+    
+    switch (videoObject.type) {
+        case "decision":
+            var dock = player.dock;
+            $(dock).addClass("active");
+            break;
+        case "outcome":
+            break;
+        case "static":
+            break;
+    }
+    
+    
+    bindPlayerLayer(videoObject, function() {
+        videoObject.currently_playing = true;
+        videoObject.e.play();
+        $(videoObject.e).addClass("active").removeClass("queued");
+        bindVideoEvents()
+        bindInteractionEvents()
+    });
+    console.log("[Video Playing:",videoObject.id,"] ✅ ");
+}
+
+
+
+
+
+// Start the current video
+function stopVideo() {
+    
+//    var stageID = videoTag.getAttribute("data-stageid");
+//    if (stages[stageID].decision == true) {
+//        var dock = player.dock;
+//        $(dock).addClass("active");
+//    } else {
+//        $(dock).removeClass("active");
+//    }
+    player.activeBindedVieo.pause();
+//    
+//    $(videoTag).addClass("active");
+//    $(videoTag).removeClass("queued");  
+//    
+//    bindVideoEvents()
+//    bindInteractionEvents()
+    
+}
+
+
+
+
+
+
+
+
+
 // ------------------------------------------------------------------------------------------------------ //
 // ###################################################################################################### //
 // ############### --------------- Loaders - Continous Setup Functions --------------- ################## //
@@ -348,8 +458,8 @@ function loadStage(stageIndex) {
 
 
 // Add the provided video the Player, with the option and stage metadata
-function bindPlayerLayer(videoObject) {
-    console.log("⮑ → [Binding to DOM, VObject ID:",videoObject.id,"] 👩‍💻 ");
+function bindPlayerLayer(videoObject, callback) {
+    console.log("⮑ [Binding to DOM, VObject ID:",videoObject.id,"] 👩‍💻 ");
 
     // 1) Check if video is already in the Player DOM
     var exists;
@@ -361,13 +471,11 @@ function bindPlayerLayer(videoObject) {
         }
     }
     
-    // 2) If it isn't already in the queue, create the new video
-    if (exists == false) {
-        var videoElement = createVideoElement(videoObject);
-        
-        // 3) Then add the new video to the page
-        player.player.appendChild(videoElement);
-        console.log("⮑ → [Binded to DOM, VObject ID:",video.video_id,"] ✅ ");
+    // 2) If it isn't already in the DOM, add it to the DOM
+    if (exists == false) {        
+        player.player.appendChild(videoObject.e);
+        console.log("⮑ [Binded to DOM, VObject ID:",videoObject.id,"] ✅ ");
+        callback();
     }
 }
 
@@ -403,7 +511,9 @@ function createVideoObject(stageIndex, outcomeIndex) {
             next_stage = null;
         
         if (typeof stage.default_outcome !== 'null') { timeout = true; }
-        if (typeof stage.decision == false) { 
+        
+        if (stage.decision == false) { 
+            console.log("Static");
             type = 'static';
             next_stage = stage.outcomes[stage.default_outcome].next_stage;
         }
@@ -538,107 +648,6 @@ function createChoiceFromOptionVideoObject(videoObject) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-// ----------------------------------------------------------------------------------------- //
-// ######################################################################################### //
-// ############### --------------- Key One Time Functions --------------- ################## //
-// ######################################################################################### //
-
-
-
-
-
-// Start the Film
-function startFilm() {
-    
-    // Remove the Splash Screen    
-    $(".playerSplash").removeClass('show');
-    setTimeout(function(){
-        $(".playerSplash").remove();
-    }, 1500);
-
-    // Start the video with the earliest stafe !!!!!!!!!!!!!!!!!!!!!!!!!!!!! (player with start attribute)
-    startVideo(player.binded.videoWithEarliestStage);
-    
-    // Fade the player in
-    $(".filmPlayer").fadeIn('slow');
-    $(".filmPlayer").addClass('active');
-    
-}
-
-
-
-
-
-
-
-
-
-
-// ------------------------------------------------------------------------------------------ //
-// ########################################################################################## //
-// ############### --------------- Key Continous Functions --------------- ################## //
-// ########################################################################################## //
-
-
-
-
-
-// Start the provided video
-function startVideo(videoObject) {
-    
-    var stageID = videoTag.getAttribute("data-stageid");
-    if (stages[stageID].decision == true) {
-        var dock = player.dock;
-        $(dock).addClass("active");
-    } else {
-        $(dock).removeClass("active");
-    }
-    
-    // Request Fullscreen
-    requestFullscreen();
-    
-    videoTag.play();
-    
-    $(videoTag).addClass("active");
-    $(videoTag).removeClass("queued");  
-    
-    bindVideoEvents()
-    bindInteractionEvents()
-    
-}
-
-
-
-
-
-// Start the current video
-function stopVideo() {
-    
-//    var stageID = videoTag.getAttribute("data-stageid");
-//    if (stages[stageID].decision == true) {
-//        var dock = player.dock;
-//        $(dock).addClass("active");
-//    } else {
-//        $(dock).removeClass("active");
-//    }
-    player.activeBindedVieo.pause();
-//    
-//    $(videoTag).addClass("active");
-//    $(videoTag).removeClass("queued");  
-//    
-//    bindVideoEvents()
-//    bindInteractionEvents()
-    
-}
 
 
 
@@ -827,10 +836,9 @@ function nextVideo() {
 
 // Bind events for interacting with thew video player
 function bindVideoEvents() {
-    console.log("Binding Video Events");
+    console.log("⮑ [Binding Video Events to VElement Instance:",player.vObjects.live.id,"] 🛠 ");
     
-    console.log(player.binded.activeVideo);
-   $(player.binded.activeVideo).on('ended', function() {
+    $(player.vObjects.live).on('ended', function() {
        var videoType = this.getAttribute("data-videotype");
        var stageID = this.getAttribute("data-stageid");
        var stage = stages[stageID];
@@ -847,7 +855,7 @@ function bindVideoEvents() {
             player.binded.activeVideo.element.pause();
         }
     });
-    
+    console.log("⮑ [Video Event Observers binded to VElement:",player.vObjects.live.id,"] ✅ ");
 }
 
 
@@ -1064,3 +1072,32 @@ $( document ).ready(function() {
 //        
         
     });
+
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------------------- //
+// ################################################################################### //
+// ############### --------------- Generic Methods --------------- ################### //
+// ################################################################################### //
+
+
+
+
+
+
+function findObjectByKey(array, key, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][key] === value) {
+            return array[i];
+        }
+    }
+    return null;
+}
