@@ -42,7 +42,7 @@ var player = {
         
         getVideoObjectByID: function(id) {
             var found = this.all.find(function(element) {
-                return element == id;
+                return element.id == id;
             }); 
             return found
         }
@@ -132,11 +132,11 @@ var player = {
     
     // # METHODS # //
     loadVideo: function(videoObject) {
-        if (typeof videoObject !== 'undefined') {
+        if ((typeof videoObject !== 'undefined') && (typeof videoObject !== 'null') && (videoObject !== null) && (videoObject !== undefined)) {
 
             var exists;
             for(exists = false, i = 0; i < this.vObjects.all.length && exists == false; i++) {
-                if (this.vObjects.all[i].id == videoObject.id) {
+                if (this.vObjects.getVideoObjectByID(videoObject.id) !== undefined) {
                     console.log("⮑ → [Video is already loaded] ❌ ");
                     exists = true;
                     break;
@@ -148,10 +148,6 @@ var player = {
                 this.vObjects.all.push(videoObject);
             }
         }
-    },
-    
-    queue: function(videoObject) {
-        
     },
     
     play: function(videoObject) {
@@ -425,7 +421,7 @@ function startVideo(videoObject) {
     }
     
         
-    if ((videoObject.flags_set !== null) || (videoObject.flags_set !== undefined)) {
+    if ((videoObject.flags_set !== null) && (videoObject.flags_set !== undefined)) {
         player.flags.push(videoObject.flags_set);
         console.log("[Setting Flag:",videoObject.flags_set,"]");
     }
@@ -456,20 +452,22 @@ function stopVideo() {
 
 
 function nextVideoAfter(oldVideo) {
-    
-    if (oldVideo.next_stage !== null) {
-        loadStage(oldVideo.next_stage);
-    }
-    if (player.vObjects.getVideoObjectByID([stages[oldVideo.next_stage].video_id]) == null) {
-        console.log("video isn't loaded");
-    }                
-    
     console.log("⮑ → [Next Stage is set:",oldVideo.next_stage,"]");
-    if (oldVideo.next_stage !== null) {
-        loadStage(oldVideo.next_stage);
-    }
 
     loadStage(oldVideo.next_stage);
+//    
+//    if (oldVideo.next_stage !== null) {
+//        loadStage(oldVideo.next_stage);
+//    } else if (player.vObjects.getVideoObjectByID([stages[oldVideo.next_stage].video_id]) == null) {
+//        console.log("video isn't loaded");
+//    }                
+//    
+//    console.log("⮑ → [Next Stage is set:",oldVideo.next_stage,"]");
+//    if (oldVideo.next_stage !== null) {
+//        loadStage(oldVideo.next_stage);
+//    }
+//    console.log("⮑ → [Next Stage is set:",oldVideo.next_stage,"]");
+//    loadStage(oldVideo.next_stage);
 
     var nextVideo;
     switch (oldVideo.type) {
@@ -503,8 +501,6 @@ function nextVideoAfter(oldVideo) {
         });
     } catch(err) { console.log("Error", err); }
 
-    loadStage(nextVideo.stage);
-    loadStage(nextVideo.stage + 1);
     startVideo(nextVideo);
 }
 
@@ -637,20 +633,22 @@ function bindPlayerLayer(videoObject, callback) {
 
 // Create Video Object
 function createVideoObject(stageIndex, outcomeIndex) {
-    
+    console.log(stageIndex, outcomeIndex);
     // Creating Video Objects for Stages
     if ((typeof stageIndex !== 'undefined') && (typeof outcomeIndex === 'undefined')) {
 //        console.log("⮑ → [Creating VObject for Stage:",stageIndex+".x","] 🛠 ");
                 
         var stage = stages[stageIndex];
+        console.log(stage);
         var video = videos[stage.video_id];
+        console.log(video);
         var timeout = false,
             type = 'decision',
             next_stage = null;
         
         if (stage.default_outcome !== null) { timeout = true; }
         
-        if (stage.decision == false) { 
+        if ((stage.decision == false) && (timeout == true)) { 
             type = 'static';
             console.log(stage,stage.default_outcome, stage.outcomes[stage.default_outcome])
             next_stage = stage.outcomes[stage.default_outcome].next_stage;
@@ -677,6 +675,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
             timeout: timeout,
             default_outcome: stage.default_outcome,
         }
+        console.log(videoObject);
         console.log("⮑ → [Created VObject for Stage:",stageIndex+".x","] ✅ ");
         return videoObject;
     } 
@@ -689,8 +688,11 @@ function createVideoObject(stageIndex, outcomeIndex) {
 //        console.log("⮑ → [Creating VObject for Outcome:",stageIndex+"."+outcomeIndex,"] 🛠 ");
         
         var stage = stages[stageIndex];
+        console.log(stage);
         var outcome = stage.outcomes[outcomeIndex];
+        console.log(outcome);
         var video = videos[outcome.video_id];
+        console.log(video);
         var timeout = false,
             type = 'outcome';
                 
@@ -718,6 +720,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
             flags_required: outcome.flags_required,
             flags_set: outcome.flags_set
         }
+        console.log(videoObject);
         console.log("⮑ → [Created VObject for Outcome:",stageIndex+"."+outcomeIndex,"] ✅ ");
         return videoObject;
     }
@@ -838,12 +841,15 @@ function highlightChoice(choice) {
 function lockChoice() {    
     if (player.vObjects.live.type == "decision") {
         var highlightedChoice = player.highlightedChoice.element
+        console.log(highlightedChoice);
         $(highlightedChoice).addClass("locked");
         var optionIndex = highlightedChoice.getAttribute("data-outcomeIndex");
         console.log("[Locking Choice",optionIndex,"]");
         player.vObjects.live.optionIndex = parseInt(optionIndex);
         player.vObjects.live.nextVideo = parseInt(highlightedChoice.getAttribute("data-nextvideoId"));
         player.vObjects.live.next_stage = parseInt(highlightedChoice.getAttribute("data-nextstage"));
+        console.log(parseInt(optionIndex),parseInt(highlightedChoice.getAttribute("data-nextvideoId")), parseInt(highlightedChoice.getAttribute("data-nextstage")));
+        console.log(player.vObjects.live);
         
         $(".choiceSelection .playerChoice:not(.locked)").css({"width":"0","opacity":"0"});
     }
@@ -856,8 +862,8 @@ function lockChoice() {
 // Navigate bvetween binded choices
 function navigateOptions(direction) {
     var allBindedChoices = player.binded.choices;
+    console.log(allBindedChoices, allBindedChoices.length);
     var highlightedChoiceIndex = player.highlightedChoice.index;
-    var allBindedChoices = player.binded.choices;
     console.log("Current Choice: ",highlightedChoiceIndex);
     
     var newChoice;
