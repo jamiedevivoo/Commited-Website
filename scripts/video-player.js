@@ -34,10 +34,29 @@ var player = {
     vObjects: {
         all: [],
         get pilot()     { return findObjectByKey(this.all, 'is_start', true);           },
-        get live()      { return findObjectByKey(this.all, 'currently_playing', true);  },
+        get live()      { return findObjectByKey(this.all, 'currentVideo', true);  },
         get queued()    { return findObjectByKey(this.all, 'queued', true);             },
     },
     
+    dock: {
+        get e() { return player.player.querySelector("#choiceSelection"); },
+        
+        visible: false,
+        
+        show: function() {
+            this.visible = true;
+            $(this.e).removeClass('active');
+            $(player.interactiveLayer).removeClass('bordered');
+            bindInteractionEvents();
+        },
+    
+        hide: function() {
+            this.visible = false;
+            $(this.e).addClass('active');
+            $(player.interactiveLayer).addClass('bordered');
+        },
+            
+    },
     availableOutcomes: [
         {
             option_index: null,
@@ -66,11 +85,10 @@ var player = {
     get player()            { return this.container.querySelector("div.filmPlayer");    },    
     get splash()            { return this.container.querySelector("playerSplash");      },    
     get interactiveLayer()  { return this.player.querySelector("#interactiveLayer");    },    
-    get dock()              { return this.player.querySelector("#choiceSelection");     },
     
     // DOM Binded Elements
     binded: {
-        get choices()   { return player.dock.getElementsByClassName("playerChoice");  },
+        get choices()   { return player.dock.e.getElementsByClassName("playerChoice");  },
         get videos()    { return player.player.getElementsByTagName("video");         },
         get videoWithEarliestStage() {   
             var queue = player.binded.videos,        
@@ -121,6 +139,20 @@ var player = {
             videoObject.e = createVideoElement(videoObject);
             this.vObjects.all.push(videoObject);
         }
+    },
+    queue: function(videoObject) {
+        
+    },
+    play: function(videoObject) {
+        if (typeof videoObject == 'undefined') {
+            this.vObjects.live.e.play();
+        } else {
+            videoObject.e.play();
+            videoObject.currentVideo = true;
+        }
+    },
+    pause: function() {
+        this.vObjects.live.e.pause();
     }
 }
 
@@ -319,7 +351,7 @@ function startFilm() {
     
     // Request Fullscreen
     requestFullscreen();
-    
+
     // Remove the Splash Screen    
     $(".playerSplash").removeClass('show');
     setTimeout(function(){
@@ -357,24 +389,21 @@ function startVideo(videoObject) {
     
     switch (videoObject.type) {
         case "decision":
-            var dock = player.dock;
-            $(dock).addClass("active");
+            player.dock.show();
             break;
         case "outcome":
+            player.dock.hide();
             break;
         case "static":
+            player.dock.hide();
             break;
     }
     
-    
-    bindPlayerLayer(videoObject, function() {
-        videoObject.currently_playing = true;
-        videoObject.e.play();
-        $(videoObject.e).addClass("active").removeClass("queued");
-        bindVideoEvents()
-        bindInteractionEvents()
-    });
+    player.play(videoObject);
+    $(videoObject.e).addClass("active").removeClass("queued");
+    player.currentStage = videoObject.stage_id;
     console.log("[Video Playing:",videoObject.id,"] ✅ ");
+    player.queue(videoObject.next_stage);
 }
 
 
@@ -383,7 +412,7 @@ function startVideo(videoObject) {
 
 // Start the current video
 function stopVideo() {
-    
+        player.vObjects.live.e.pause();
 //    var stageID = videoTag.getAttribute("data-stageid");
 //    if (stages[stageID].decision == true) {
 //        var dock = player.dock;
@@ -391,7 +420,6 @@ function stopVideo() {
 //    } else {
 //        $(dock).removeClass("active");
 //    }
-    player.activeBindedVieo.pause();
 //    
 //    $(videoTag).addClass("active");
 //    $(videoTag).removeClass("queued");  
@@ -421,20 +449,31 @@ function stopVideo() {
 // Load the provided stageID
 function loadStage(stageIndex) {
     console.log("⮑ [Loading Stage:",stageIndex+".x","] 👩‍💻 ");
-        var stageVideoObject = createVideoObject(stageIndex);
-        player.loadVideo(stageVideoObject)
+    var stageVideoObject = createVideoObject(stageIndex);
+    player.loadVideo(stageVideoObject)
+
+    bindPlayerLayer(stageVideoObject, function() {
+        bindVideoEvents(stageVideoObject);
+    });
+        
+    console.log("⮑ → [Loading Outcomes for:",stageIndex,"] 🛠 ");
     
-        if (stages[stageIndex].outcomes.length > 0) {
-            console.log("⮑ → [Loading Outcomes for:",stageIndex,"] 🛠 ");
-            for(var i=0; i < stages[stageIndex].outcomes.length; i++) {
-                if (stages[stageIndex].outcomes[i].video_id !== null) {
-                    var outcomeVideoObject = createVideoObject(stageIndex, i);
-                    player.loadVideo(outcomeVideoObject)
-                    createChoiceFromOptionVideoObject(outcomeVideoObject);
-                } else { console.log("⮑ → [Stage",stageIndex," has no optional Outcomes] ✅ "); }
-            }
-            console.log("⮑ → [Outcomes for: ",stageIndex," Created] ✅ ");
-        } else { console.log("⮑ → [Stage",stageIndex," has no optional Outcomes] ✅ "); }
+    if ((stages[stageIndex].outcomes.length) <= 0 || (stages[stageIndex].outcomes[0].video_id == null)) {
+        console.log("⮑ → [Stage",stageIndex," has no optional Outcomes] ✅ "); 
+    } else {
+        for(var i=0; i < stages[stageIndex].outcomes.length; i++) {
+            var outcomeVideoObject = createVideoObject(stageIndex, i);
+
+            player.loadVideo(outcomeVideoObject)
+            createChoiceFromOptionVideoObject(outcomeVideoObject);
+
+            bindPlayerLayer(outcomeVideoObject, function() {
+                bindVideoEvents(outcomeVideoObject);
+            });
+        }
+        bindInteractionEvents();
+        console.log("⮑ → [Outcomes for: ",stageIndex," Created] ✅ ");
+    }
     
     console.log("⮑ [Stage Created:",stageIndex+".x","] ✅ ");
 }
@@ -510,10 +549,9 @@ function createVideoObject(stageIndex, outcomeIndex) {
             type = 'decision',
             next_stage = null;
         
-        if (typeof stage.default_outcome !== 'null') { timeout = true; }
+        if (stage.default_outcome !== null) { timeout = true; }
         
         if (stage.decision == false) { 
-            console.log("Static");
             type = 'static';
             next_stage = stage.outcomes[stage.default_outcome].next_stage;
         }
@@ -542,7 +580,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
     // Creating Video Objects for Outcomes.
     else if ((typeof stageIndex !== 'undefined') && 
              (typeof outcomeIndex !== 'undefined') && 
-             (stages[stageIndex].outcomes[stages[stageIndex].default_outcome].video_id !== null)
+             ((stages[stageIndex].default_outcome === null) || (stages[stageIndex].outcomes[stages[stageIndex].default_outcome].video_id !== null))
             ) {
         console.log("⮑ → [Creating VObject for Outcome:",stageIndex+"."+outcomeIndex,"] 🛠 ");
         
@@ -641,7 +679,7 @@ function createChoiceFromOptionVideoObject(videoObject) {
             $(playerChoice).addClass("playerChoice");
             playerChoice.setAttribute("data-optionIndex",videoObject.option_index);
 
-        var dock = player.dock;
+        var dock = player.dock.e;
             dock.appendChild(playerChoice);
         console.log("⮑ → [Created and added Choice to DOM:",videoObject.id+"."+videoObject.outcome_index,"(",videoObject.title,"))] ✅ ");
 
@@ -710,22 +748,6 @@ function navigateOptions(direction) {
     }
     console.log("New Choice: ",newChoice);
     highlightChoice(newChoice);
-}
-
-
-
-
-
-// Show the Dock
-function showDock() {
-    $(player.dock).addClass('active');
-    $(player.interactiveLayer).addClass('bordered');
-}
-
-// Hide the Dock
-function hideDock() {
-    $(player.dock).removeClass('active');
-    $(player.interactiveLayer).removeClass('bordered');
 }
 
 
@@ -803,7 +825,7 @@ $(document).keyup(function(e) {
         console.log("key pressed");
         switch (e.keyCode) {
             case 27: // Escape
-                exitCommitted()
+                exitCommitted();
                 break;
             case 37: // Left Arrow
                 navigateOptions("left");
@@ -826,41 +848,38 @@ $(document).keyup(function(e) {
 
 
 
-function nextVideo() {
-    
-}
-
-
-
-
-
 // Bind events for interacting with thew video player
-function bindVideoEvents() {
-    console.log("⮑ [Binding Video Events to VElement Instance:",player.vObjects.live.id,"] 🛠 ");
+function bindVideoEvents(videoObject) {
+    console.log("⮑ [Binding Video Events to VElement Instance:",videoObject.id,"] 🛠 ");
     
-    $(player.vObjects.live).on('ended', function() {
-       var videoType = this.getAttribute("data-videotype");
-       var stageID = this.getAttribute("data-stageid");
-       var stage = stages[stageID];
-       console.log("End: ",stage);
-        $(player.dock).addClass('active');
-        if (stage.is_end !==true) {
-            console.log("This isn't the end, load next video");
-            showDock();
-            if (videoType == "option") {
-//                var nextVideo = 
-                startVideo();
-            }
-        } else {
-            player.binded.activeVideo.element.pause();
-        }
-    });
-    console.log("⮑ [Video Event Observers binded to VElement:",player.vObjects.live.id,"] ✅ ");
+    $(videoObject).on('ended', livePlayerEnded);
+    
+    console.log("⮑ [Video Event Observers binded to VElement:",videoObject.id,"] ✅ ");
 }
 
 
 
 
+
+function livePlayerEnded() {
+    console.log("⮑ [Video Ended:",player.vObjects.live.id,"] 🛠 ");
+        
+    
+    if (player.vObjects.live.is_end !==true) {
+        console.log("⮑ [Film hasn't ended.]");
+        switch (player.vObjects.live.type) {
+            case "decision":
+                player.dock.show();
+                break;
+            case "static":
+                break;
+            case "outcome":
+                break;
+        }
+    } else {
+        player.binded.activeVideo.element.pause();
+    }
+}
 
 
 
