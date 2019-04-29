@@ -9,7 +9,7 @@
         <h2 class="title letter-Spacing committedTitle">You have a voicemail</h2>
         <h4>Headphones on? Feeling comfortable?</h4>
         <button onclick="startFilm()" class="primary_cta">Let's Begin</button>
-        <p>By clicking this link you confirm you are at least 15 years if age.</p>
+        <p>By clicking this link you confirm you are at least 15 years of age.</p>
     </div>
 </div>
 <div class="filmPlayer">

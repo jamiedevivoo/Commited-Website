@@ -264,6 +264,7 @@ body.filmLaunched {
 } 
 .playerSplash p {
     padding-top: 20px;
+    opacity: 0.2;
 } 
 
 .filmPlayer video {

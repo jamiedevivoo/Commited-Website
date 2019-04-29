@@ -6,38 +6,35 @@ var body = document.getElementsByTagName("body")[0];
 
 
 
+
+
+
+
+
+// ------------------------------------------------------------------------------------ //
 // #################################################################################### //
 // ############### --------------- The Player Object --------------- ################## //
 // #################################################################################### //
 
 
+
+
+
 var player = {
     
-    // REFERENCES & MEMORY
+    // # REFERENCES & MEMORY # //
+    // State Tracking
+    created: false,
     initialised: false,
     visible: false,
     state: "uninitialised",
-    currentStage: {
-        id: null,
-        video_id: null,
-
-        is_start: null,
-        is_end: null,
-
-        decision:null,
-        default_outcome: null
-    },
-    loadedStages: {
-        id: null,
-        video_id: null,
-
-        is_start: null,
-        is_end: null,
-
-        decision:null,
-        default_outcome: null
-    },
-    availableOptions: [
+    currentStage: null,
+    
+    // Video
+    loadedVideos: [],
+    activeVideo: null, //id
+    nextVideo: null, //id
+    availableOutcomes: [
         {
             option_index: null,
             title: null,
@@ -50,39 +47,50 @@ var player = {
             next_stage: null
         }
     ],
-    selectedOption: null,
-    activeVideo: {
-        id: null,
-        type: null      
-    },
-    loadedVideos: {
-        id: null,
-        type: null      
-    },
-    queue: [
-        {
-            element: null,
-            video_id: null
-        }
-    ],
+
+    // Other
     flags: [],
         
-    // GETTERS
-    get container() {
-        return document.querySelector("div.filmContainer");
+    
+    
+    
+    
+    // # GETTERS # //
+    // Significant Containers
+    get container()         { return document.querySelector("div.filmContainer");       },
+    get player()            { return this.container.querySelector("div.filmPlayer");    },    
+    get interactiveLayer()  { return this.player.querySelector("#interactiveLayer");    },    
+    get dock()              { return this.player.querySelector("#choiceSelection");     },
+    
+    // DOM Binded Elements
+    binded: {
+        get choices()   { return player.dock.getElementsByClassName("playerChoice");  },
+        get videos()    { return player.player.getElementsByTagName("video");         },
+        get videoWithEarliestStage() {   
+            var queue = player.binded.videos,        
+                earliestStage = null,
+                stageToBeReturned = null;
+            for(var i=0; i < queue.length; i++) {
+                var stage = queue[i].getAttribute("data-stageid");
+
+                if ((earliestStage === null) || (stage < earliestStage)) {
+                    earliestStage = stage;
+                    stageToBeReturned = queue[i];
+                }
+            }
+            return stageToBeReturned;
+        },
+        get activeVideo() {    
+            var queue = player.binded.videos;
+            for(var i=0; i < queue.length; i++) {
+                if ($(queue[i]).hasClass("active")) {
+                    return queue[i];
+                }
+            }
+        },
     },
-    get player() {
-        return this.container.querySelector("div.filmPlayer");
-    },    
-    get interactiveLayer() {
-        return this.player.querySelector("#interactiveLayer");
-    },    
-    get dock() {
-        return this.player.querySelector("#choiceSelection");
-    },
-    get allBindedChoices() {
-        return this.dock.getElementsByClassName("playerChoice");
-    },
+    
+    // Interaction Tracking
     highlightedChoice: {
         get element() {
             return player.dock.querySelector(".playerChoice.selected");
@@ -96,75 +104,94 @@ var player = {
             }
         },
     },
-    get bindedVideos() {
-        return this.player.getElementsByTagName("video");
-    },
-    get bindedVideoWithEarliestStage() {   
-        var queue = player.bindedVideos,        
-            earliestStage = null,
-            stageToBeReturned = null;
-        for(var i=0; i < queue.length; i++) {
-            var stage = queue[i].getAttribute("data-stageid");
-            
-            if ((earliestStage === null) || (stage < earliestStage)) {
-                earliestStage = stage;
-                stageToBeReturned = queue[i];
-            }
+    
+    
+    
+    
+    
+    // # METHODS # //
+    loadVideo: function(videoObject) {
+        if (typeof videoObject !== 'undefined') {
+            videoObject.e = createVideoElement(videoObject);
+            this.loadedVideos.push(videoObject);
         }
-        return stageToBeReturned;
-    },
-    get activeBindedVideo() {    
-        var queue = player.bindedVideos;
-        for(var i=0; i < queue.length; i++) {
-            if ($(queue[i]).hasClass("active")) {
-                return queue[i];
-            }
-        }
-    },
-    get nextVideo() {
-        return this.queue[0];
-    },
+    }
 }
 
 
 
 
 
+
+
+
+
+
+// -------------------------------------------------------------------------------------------- //
 // ############################################################################################ //
 // ############### --------------- First and last Responders --------------- ################## //
 // ############################################################################################ //
 
 
 
+
+
 // Launch the film
 function launchCommitted() {
     
-    console.log("Launching Player");
+    console.log("[New Request to Launch Player] ... ");
     
-    if (player.container == null) {
-        console.log("Player Doesn't Exist");
-        createPlayer();
+    // 1) Check if player is already launched
+    if (player.visible == true) {
+        console.log("🚧 [Player Already Visible]");
     }
     
-    $(player.container).addClass("active");
-    $(body).addClass("filmLaunched");
-    player.state = "launched";
+        // 2) Check player is created
+        else if (player.created == false) {
+            console.log("🚧 [Player Doesn't Exist]");
+            createPlayer(function() {    
+                launchCommitted();
+            });
+        }
+    
+        // 3) Check player is initialised
+        else if (player.initialised == false) {
+            console.log("🚧 [Player Isn't Initialised]");
+            initPlayer(function() {    
+                launchCommitted();
+            });
+        }
+    
+        // 4) If both are initialised, continue with the launch.
+        else if (player.initialised == true && player.created == true) {
+            console.log("[Player is Ready] ✅ ");
 
-    if (history.pushState) {
-          var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?state=launchedCommitted';
-          window.history.pushState({path:newurl},'',newurl);
-    }
-    
-    player.visible = true;
-    $(player.player).focus();
-    
+            $(player.container).addClass("active");
+            $(body).addClass("filmLaunched");
+            player.state = "launched";
+
+            // Request Fullscreen
+            requestFullscreen();
+
+            player.visible = true;
+            $(player.player).focus();
+
+            // Then set the url parameters
+            if (player.visible = true && history.pushState) {
+              var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?state=launchedCommitted';
+              window.history.pushState({path:newurl},'',newurl);
+            }
+        }
 }
+
+
+
 
 
 // Exit the film
 function exitCommitted() {
     
-    console.log("Exiting Player");
+    console.log("[Exiting Player]");
     
     $(player.container).removeClass("active");    
     $(body).removeClass("filmLaunched");
@@ -175,24 +202,32 @@ function exitCommitted() {
           window.history.pushState({path:newurl},'',newurl);
     }
     
-        player.visible = false;
-    
+    player.visible = false;
 }
 
 
 
 
 
+
+
+
+
+
+// ------------------------------------------------------------------------------------ //
 // #################################################################################### //
 // ############### --------------- Set the Player up --------------- ################## //
 // #################################################################################### //
 
 
+
+
+
 // Ajax call to add the player to the DOM
-function createPlayer() {
+function createPlayer(callback) {
     
-    if (player.container == null) {
-        console.log("Creating Player");
+    if (player.created == false) {
+        console.log("⮑ [Creating and Appending Player] 👩‍💻  ... ");
         player.state = "creating";
     
         var filmContainer = document.createElement('div');
@@ -202,123 +237,125 @@ function createPlayer() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                console.log("Player Created");
+                console.log("⮑ → [AJAX Call Successful] ✅ ");
+                
                 filmContainer.innerHTML = this.responseText;
+                    player.state = "created";
+                    player.created = true;
+                
                 body.appendChild(filmContainer);
-                launchCommitted();
-                initPlayer();
-            }
+                    player.state = "loaded";
+                
+                console.log("✅ [Player Created and Appended to DOM]");
+
+                callback();
+                }
         };
         xhttp.open("GET", "filmPlayer.php", true);
         xhttp.send();
-        player.state = "created";
+        console.log("⮑ → [Creating AJAX Call] 👩‍💻  ... ");
     }
     
 }
+
+
+
 
 
 // Set up variables and load initial stage
-function initPlayer() {
+function initPlayer(callback) {
     
-    console.log("Initialising Player");
-    player.state = "initialising";
+    if (player.created == true && player.initialised == false) {
+        console.log("⮑ [Initialising Player] 👩‍💻  ...  ");
+        player.state = "initialising";
     
-    for(var i=0; i < stages.length; i++) {
-        if (stages[i].is_start == true) {
-            loadStage(i);
-            loadStageOptions(i);
+        $(".playerSplash").addClass('show');
+        player.container.setAttribute("data-playerInitialised",true);
+        
+        for(var i=0; i < stages.length; i++) {
+            if (stages[i].is_start == true) {
+                loadStage(i);
+    
+                $(".playerSplash").addClass('show');
+                player.container.setAttribute("data-playerInitialised",true);
+                
+                console.log("✅ [Player Initialised]");
+                player.state = "initialised";
+                player.initialised = true;
+                
+                callback()
+            }
         }
+        
     }
-    
-    $(".playerSplash").addClass('show');
-    player.container.setAttribute("data-playerInitialised",true);
-    player.initialised = true;
-    player.state = "initialised";
-    
 }
 
 
 
 
 
+
+
+
+
+
+// ------------------------------------------------------------------------------------------------------ //
 // ###################################################################################################### //
 // ############### --------------- Loaders - Continous Setup Functions --------------- ################## //
 // ###################################################################################################### //
 
 
+
+
+
 // Load the provided stageID
 function loadStage(stageIndex) {
+    console.log("⮑ [Loading Stage:",stageIndex+".x","] 👩‍💻 ");
+        var stageVideoObject = createVideoObject(stageIndex);
+        player.loadVideo(stageVideoObject)
     
-    var stage = stages[stageIndex];
-    var initialVideoID = stage.video_id;
-    var initialVideo = videos[initialVideoID];
-    var isStart = stage.is_start;
-    var isEnd = stage.is_end;
-    var isDecision = stage.decision;
-    var defaultOutcome = stage.default_outcome;
-    var timeout;
+        if (stages[stageIndex].outcomes.length > 0) {
+            console.log("⮑ → [Loading Outcomes for:",stageIndex,"] 🛠 ");
+            for(var i=0; i < stages[stageIndex].outcomes.length; i++) {
+                if (stages[stageIndex].outcomes[i].video_id !== null) {
+                    var outcomeVideoObject = createVideoObject(stageIndex, i);
+                    player.loadVideo(outcomeVideoObject)
+                    createChoiceFromOptionVideoObject(outcomeVideoObject);
+                } else { console.log("⮑ → [Stage",stageIndex," has no optional Outcomes] ✅ "); }
+            }
+            console.log("⮑ → [Outcomes for: ",stageIndex," Created] ✅ ");
+        } else { console.log("⮑ → [Stage",stageIndex," has no optional Outcomes] ✅ "); }
     
-    if (defaultOutcome == undefined || defaultOutcome == null) { timeout = false; } else {timeout = true;}
-    
-    console.log(stageIndex+".x", " loaded stage: ",stageIndex,"videoId: ",initialVideoID,", Start: ",isStart,", End: ",isEnd,", Decision: ",isDecision,", Timeout: ",timeout,", Default: ",defaultOutcome);
-    bindPlayerLayer(videos[initialVideoID],undefined,stage);
-        
-    if (isDecision == true) {
-        loadStageOptions(stageIndex);
-    } else if (isDecision == false) {
-        var defaultOption = stage.options[defaultOutcome];
-        var nextStage = defaultOption.next_stage;
-        loadStage(nextStage);
-    }
-    
-}
-
-
-// Load all options for the provided StageID
-function loadStageOptions(stageIndex) {
-    
-    var stage = stages[stageIndex];
-    var options = stage.outcome;
-
-        for(var i=0; i < options.length; i++) {
-            var option = stage.outcome[i]
-            var optionVideo = videos[option.video_id];
-            
-            console.log(stageIndex+"."+i," loaded option: ",i,", Video ID: ",optionVideo.video_id,", optionVideo: ",optionVideo,", optionVideoSrc: ",optionVideo.source);
-            
-            // Create and add Choice
-            var playerChoice = document.createElement('span');
-                playerChoice.innerHTML = option.title;
-                $(playerChoice).addClass("playerChoice");
-                playerChoice.setAttribute("data-optionIndex",option.option_index);
-            
-            var dock = player.dock;
-                dock.appendChild(playerChoice);
-            console.log("Added Choice for: ",option.title);
-                        
-            // Create and add Video
-            bindPlayerLayer(optionVideo,option,stage);
-        }
-    
+    console.log("⮑ [Stage Created:",stageIndex+".x","] ✅ ");
 }
 
 
 
 
 
+
+
+
+
+
+// ------------------------------------------------------------------------------------------------------ //
 // ###################################################################################################### //
 // ############### --------------- Binders - Continous Setup Functions --------------- ################## //
 // ###################################################################################################### //
 
 
+
+
+
 // Add the provided video the Player, with the option and stage metadata
-function bindPlayerLayer(video, option, stage) {
-    
+function bindPlayerLayer(videoObject) {
+    console.log("⮑ → [Binding to DOM, VObject ID:",videoObject.id,"] 👩‍💻 ");
+
     // 1) Check if video is already in the Player DOM
     var exists;
-    for(exists = false, i = 0; i < player.bindedVideos.length && exists == false; i++) {
-        if (player.bindedVideos[i].getAttribute("data-videoid") == video.video_id) {
-            console.log("Video is already in the queue");
+    for(exists = false, i = 0; i < player.binded.videos.length && exists == false; i++) {
+        if (player.binded.videos[i].getAttribute("data-videoid") == videoObject.id) {
+            console.log("⮑ → [Video is already in the DOM] ❌ ");
             exists = true;
             break;
         }
@@ -326,34 +363,11 @@ function bindPlayerLayer(video, option, stage) {
     
     // 2) If it isn't already in the queue, create the new video
     if (exists == false) {
-        var videoElement = document.createElement('video');
-            videoElement.src = video.source;
-            videoElement.controls = false;
-            videoElement.setAttribute("data-videoID",video.video_id);
-            $(videoElement).addClass("queued");
-        
-            videoElement.setAttribute("data-videoID",video.video_id);
-        
-            if (typeof stage !== 'undefined') {
-                videoElement.setAttribute("data-stageID",stage.stage_id);
-                if (stage.decision == true && stage.video_id == video.video_id) {
-                    videoElement.setAttribute("loop","loop");
-                    videoElement.setAttribute("data-videoType","decision");
-                } else {
-                    videoElement.setAttribute("data-videoType","static");
-                }
-            }
-            if (typeof option !== 'undefined') {
-                videoElement.setAttribute("data-optionID",option.option_index);
-                videoElement.setAttribute("data-videoType","option");
-                videoElement.setAttribute("data-nextVideo",option.next_stage);
-            }
+        var videoElement = createVideoElement(videoObject);
         
         // 3) Then add the new video to the page
-        var filmPlayer = player.player;
-        filmPlayer.appendChild(videoElement);
-        console.log("Created Video for: ",video.video_id);
-        
+        player.player.appendChild(videoElement);
+        console.log("⮑ → [Binded to DOM, VObject ID:",video.video_id,"] ✅ ");
     }
 }
 
@@ -361,9 +375,185 @@ function bindPlayerLayer(video, option, stage) {
 
 
 
+
+
+
+
+
+// ---------------------------------------------------------------------------------- //
+// ################################################################################## //
+// ############### --------------- Object Builders --------------- ################## //
+// ################################################################################## //
+
+
+
+
+
+// Create Video Object
+function createVideoObject(stageIndex, outcomeIndex) {
+    
+    // Creating Video Objects for Stages
+    if ((typeof stageIndex !== 'undefined') && (typeof outcomeIndex === 'undefined')) {
+        console.log("⮑ → [Creating VObject for Stage:",stageIndex+".x","] 🛠 ");
+                
+        var stage = stages[stageIndex];
+        var video = videos[stage.video_id];
+        var timeout = false,
+            type = 'decision',
+            next_stage = null;
+        
+        if (typeof stage.default_outcome !== 'null') { timeout = true; }
+        if (typeof stage.decision == false) { 
+            type = 'static';
+            next_stage = stage.outcomes[stage.default_outcome].next_stage;
+        }
+        
+        var videoObject = {
+            id: stage.video_id,
+            type: type,
+            next_stage: next_stage,
+            e: null,
+            
+            source:video.source,
+            manifest:video.manifest,
+            blob: video.lob,
+            
+            stage: stage.stage_id,
+            is_start: stage.is_start,
+            is_end: stage.is_end,
+            decision: stage.decision,
+            timeout: timeout,
+            default_outcome: stage.default_outcome,
+        }
+        console.log("⮑ → [Created VObject for Stage:",stageIndex+".x","] ✅ ");
+        return videoObject;
+    } 
+    
+    // Creating Video Objects for Outcomes.
+    else if ((typeof stageIndex !== 'undefined') && 
+             (typeof outcomeIndex !== 'undefined') && 
+             (stages[stageIndex].outcomes[stages[stageIndex].default_outcome].video_id !== null)
+            ) {
+        console.log("⮑ → [Creating VObject for Outcome:",stageIndex+"."+outcomeIndex,"] 🛠 ");
+        
+        var stage = stages[stageIndex];
+        var outcome = stage.outcomes[outcomeIndex];
+        var video = videos[outcome.video_id];
+        var timeout = false,
+            type = 'outcome';
+                
+        var videoObject = {
+            id: video.video_id,
+            type: type,
+            next_stage: outcome.next_stage,
+            e: null,
+            
+            source:video.source,
+            manifest:video.manifest,
+            blob: video.lob,
+            
+            stage: stage.stage_id,
+            is_start: stage.is_start,
+            is_end: stage.is_end,
+            decision: stage.decision,
+            timeout: timeout,
+            default_outcome: stage.default_outcome,
+            
+            outcome_index: outcome.option_index,
+            title: outcome.title,
+            flags_required: outcome.flags_required,
+            flags_set: outcome.flags_set
+        }
+        console.log("⮑ → [Created VObject for Outcome:",stageIndex+".x","] ✅ ");
+        return videoObject;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------------------- //
+// ################################################################################### //
+// ############### --------------- Element Builders --------------- ################## //
+// ################################################################################### //
+
+
+
+
+
+// Create a video element for the supplied videoObject
+function createVideoElement(videoObject) { // Returns Video Element
+    if (typeof videoObject !== 'undefined') {
+        console.log("⮑ → [Creating Video VElement for VObject:",videoObject.id,"] 🛠 ");
+        
+        var videoElement = document.createElement('video');
+            videoElement.controls = false;
+
+            videoElement.src = videoObject.source;
+            videoElement.setAttribute("data-videoID",videoObject.id);
+            videoElement.setAttribute("data-videoType",videoObject.type);
+            videoElement.setAttribute("data-stageID",videoObject.stage);
+            $(videoElement).addClass("queued");
+
+            switch (videoObject.type) {
+                case "decision":
+                    videoElement.setAttribute("loop","loop");
+                    break;
+                case "static":
+                    break;
+                case "outcome":
+                    videoElement.setAttribute("data-outcomeID",videoObject.outcome_index);
+                    break;
+            }
+        
+        console.log("⮑ → [Created VElement for VObject:",videoObject.id,"] ✅ ");
+        return videoElement;
+    }
+}
+
+
+
+
+
+function createChoiceFromOptionVideoObject(videoObject) {
+    if ((typeof videoObject !== 'undefined') && (videoObject.type == 'outcome')) {
+        console.log("⮑ → [Creating Choice for",videoObject.id+"."+videoObject.outcome_index,"] 🛠 ");
+
+        // Create and add Choice
+        var playerChoice = document.createElement('span');
+            playerChoice.innerHTML = videoObject.title;
+            $(playerChoice).addClass("playerChoice");
+            playerChoice.setAttribute("data-optionIndex",videoObject.option_index);
+
+        var dock = player.dock;
+            dock.appendChild(playerChoice);
+        console.log("⮑ → [Created and added Choice to DOM:",videoObject.id+"."+videoObject.outcome_index,"(",videoObject.title,"))] ✅ ");
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------------------------- //
 // ######################################################################################### //
 // ############### --------------- Key One Time Functions --------------- ################## //
 // ######################################################################################### //
+
+
+
 
 
 // Start the Film
@@ -375,11 +565,8 @@ function startFilm() {
         $(".playerSplash").remove();
     }, 1500);
 
-    // Request Fullscreen
-    requestFullscreen();
-
     // Start the video with the earliest stafe !!!!!!!!!!!!!!!!!!!!!!!!!!!!! (player with start attribute)
-    startVideo(player.bindedVideoWithEarliestStage);
+    startVideo(player.binded.videoWithEarliestStage);
     
     // Fade the player in
     $(".filmPlayer").fadeIn('slow');
@@ -391,13 +578,22 @@ function startFilm() {
 
 
 
+
+
+
+
+
+// ------------------------------------------------------------------------------------------ //
 // ########################################################################################## //
 // ############### --------------- Key Continous Functions --------------- ################## //
 // ########################################################################################## //
 
 
+
+
+
 // Start the provided video
-function startVideo(videoTag) {
+function startVideo(videoObject) {
     
     var stageID = videoTag.getAttribute("data-stageid");
     if (stages[stageID].decision == true) {
@@ -406,6 +602,10 @@ function startVideo(videoTag) {
     } else {
         $(dock).removeClass("active");
     }
+    
+    // Request Fullscreen
+    requestFullscreen();
+    
     videoTag.play();
     
     $(videoTag).addClass("active");
@@ -420,15 +620,48 @@ function startVideo(videoTag) {
 
 
 
+// Start the current video
+function stopVideo() {
+    
+//    var stageID = videoTag.getAttribute("data-stageid");
+//    if (stages[stageID].decision == true) {
+//        var dock = player.dock;
+//        $(dock).addClass("active");
+//    } else {
+//        $(dock).removeClass("active");
+//    }
+    player.activeBindedVieo.pause();
+//    
+//    $(videoTag).addClass("active");
+//    $(videoTag).removeClass("queued");  
+//    
+//    bindVideoEvents()
+//    bindInteractionEvents()
+    
+}
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------------------------- //
 // ################################################################################################## //
 // ############### --------------- Reusable Micro DOM Interactions --------------- ################## //
 // ################################################################################################## //
 
 
+
+
+
 // Highlight the provided Choice Tag
 function highlightChoice(choice) {
     
-    var newChoice = player.allBindedChoices[choice];
+    var newChoice = player.binded.choices[choice];
     console.log("highlighting choice: ",newChoice)
     $(".playerChoice").removeClass("selected"); 
     $(newChoice).addClass("selected"); 
@@ -437,11 +670,13 @@ function highlightChoice(choice) {
 
 
 
+
+
 // Navigate bvetween binded choices
 function navigateOptions(direction) {
-    var allBindedChoices = player.allBindedChoices;
+    var allBindedChoices = player.binded.choices;
     var highlightedChoiceIndex = player.highlightedChoice.index;
-    var allBindedChoices = player.allBindedChoices;
+    var allBindedChoices = player.binded.choices;
     console.log("Current Choice: ",highlightedChoiceIndex);
     
     var newChoice;
@@ -470,12 +705,13 @@ function navigateOptions(direction) {
 
 
 
+
+
 // Show the Dock
 function showDock() {
     $(player.dock).addClass('active');
     $(player.interactiveLayer).addClass('bordered');
 }
-
 
 // Hide the Dock
 function hideDock() {
@@ -485,35 +721,52 @@ function hideDock() {
 
 
 
+
+
 // Request Fullscreen
 function requestFullscreen() {
-    if(player.container.requestFullscreen) {
-        player.container.requestFullscreen();
-    }
-    else if(player.container.mozRequestFullScreen) {
-        player.container.mozRequestFullScreen();
-    }
-    else if(player.container.webkitRequestFullscreen) {
-        player.container.webkitRequestFullscreen();
-    }
-    else if(player.container.msRequestFullscreen) {
-        player.container.msRequestFullscreen();
-    }
+    
+//    try {
+//        if(player.container.requestFullscreen) {
+//            player.container.requestFullscreen();
+//        }
+//        else if(player.container.mozRequestFullScreen) {
+//            player.container.mozRequestFullScreen();
+//        }
+//        else if(player.container.webkitRequestFullscreen) {
+//            player.container.webkitRequestFullscreen();
+//        }
+//        else if(player.container.msRequestFullscreen) {
+//            player.container.msRequestFullscreen();
+//        }
+//    }
+//    catch(error) {
+//        console.log(["Fullscreen not supported"]);
+//    }
 }
 
 
 
 
+
+
+
+
+
+
+// ------------------------------------------------------------------------------------ //
 // #################################################################################### //
 // ############### --------------- Binding Observers --------------- ################## //
 // #################################################################################### //
 
 
 
+
+
 // Bind events for interacting with the player
 function bindInteractionEvents() { 
     
-//    var bindedVideos = player.bindedVideos;
+//    var binded.videos = player.binded.videos;
 //    console.log(allBindedChoices);
 //    for(var i=0; i < allChocies.length; i++) {
 //        $(allBindedChoices[i]).click(function() {
@@ -533,7 +786,11 @@ function bindInteractionEvents() {
 //        );
 //    }
 
-    $(document).keyup(function(e) {
+
+
+
+
+$(document).keyup(function(e) {
         console.log("key pressed");
         switch (e.keyCode) {
             case 27: // Escape
@@ -557,17 +814,23 @@ function bindInteractionEvents() {
 }
 
 
+
+
+
 function nextVideo() {
     
 }
+
+
+
 
 
 // Bind events for interacting with thew video player
 function bindVideoEvents() {
     console.log("Binding Video Events");
     
-    console.log(player.activeBindedVideo);
-   $(player.activeBindedVideo).on('ended', function() {
+    console.log(player.binded.activeVideo);
+   $(player.binded.activeVideo).on('ended', function() {
        var videoType = this.getAttribute("data-videotype");
        var stageID = this.getAttribute("data-stageid");
        var stage = stages[stageID];
@@ -581,7 +844,7 @@ function bindVideoEvents() {
                 startVideo();
             }
         } else {
-            player.activeBindedVideo.element.pause();
+            player.binded.activeVideo.element.pause();
         }
     });
     
@@ -590,9 +853,17 @@ function bindVideoEvents() {
 
 
 
+
+
+
+
+
+
+// ------------------------------------------------------------------------------------ //
 // #################################################################################### //
 // ############### --------------- Video Timechecks --------------- ################### //
 // #################################################################################### //
+
 
 
 

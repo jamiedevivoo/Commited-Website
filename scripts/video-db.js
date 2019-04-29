@@ -8,7 +8,7 @@ var stages = [
         
         decision:false,
         default_outcome: 0,
-        options: [
+        outcomes: [
             {
                 option_index: 0,
                 title: null,
@@ -31,7 +31,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Pick Torch Up",
@@ -65,7 +65,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Pick Wallet Up",
@@ -88,7 +88,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Corridor",
@@ -122,7 +122,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Tap",
@@ -156,7 +156,7 @@ var stages = [
         
         decision:false,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: null,
@@ -179,7 +179,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Camera",
@@ -213,7 +213,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Drawing",
@@ -247,7 +247,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Corridor",
@@ -281,7 +281,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Floorboards",
@@ -315,7 +315,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Left Room",
@@ -349,7 +349,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Enter",
@@ -372,7 +372,7 @@ var stages = [
         
         decision:true,
         default_outcome: 0,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Default",
@@ -426,7 +426,7 @@ var stages = [
         
         decision:true,
         default_outcome: 0,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Default",
@@ -471,7 +471,7 @@ var stages = [
         
         decision:true,
         default_outcome: null,
-        outcome: [
+        outcomes: [
             {
                 option_index: 0,
                 title: "Save",
