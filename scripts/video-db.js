@@ -1,3 +1,581 @@
+var videoEntries = [
+    {            
+        id: 0,
+        stage: 0,
+        type: 'static',
+        
+        e: null,
+        
+        is_start: true,
+        is_end: false,
+        
+        default_outcome: 0,
+        timeout: true,
+        
+        next: 1,
+        title: null,
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source: null,
+        manifest: null,
+        blob: null,
+    },    
+    {            
+        id: 1,
+        stage: 1,
+        type: 'decision',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: false,
+        
+        next: 1,
+        title: null,
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 3,
+        stage: 2,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 4,
+        stage: 2,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 5,
+        stage: 3,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 6,
+        stage: 3,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 7,
+        stage: 4,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 8,
+        stage: 4,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 9,
+        stage: 4,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 10,
+        stage: 5,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 11,
+        stage: 6,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 12,
+        stage: 6,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 13,
+        stage: 6,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 14,
+        stage: 7,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 15,
+        stage: 7,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 16,
+        stage: 7,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 17,
+        stage: 8,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },    
+    {            
+        id: 2,
+        stage: 1,
+        type: 'outcome',
+        
+        e: null,
+        
+        is_start: false,
+        is_end: false,
+        
+        default_outcome: null,
+        timeout: true,
+        
+        next: 3,
+        title: "Pick Torch Up",
+        
+        flags_required: null,
+        flags_set: null,
+        
+        source:null,
+        manifest:null,
+        blob: null,
+    },
+]
+
 var stages = [
     {
         stage_id: 0,
@@ -10,7 +588,7 @@ var stages = [
         default_outcome: 0,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: null,
                 
                 flags_required: null,
@@ -33,19 +611,8 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Pick Torch Up",
-                
-                flags_required: null,
-                
-                video_id: 2,
-                flags_set: null,
-                
-                next_stage: 2
-            },
-            {
-                option_index: 1,
-                title: "Dummy Test Option",
                 
                 flags_required: null,
                 
@@ -67,7 +634,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Pick Wallet Up",
                 
                 flags_required: null,
@@ -90,23 +657,23 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Corridor",
                 
                 flags_required: null,
                 
-                video_id: 5,
+                video_id: 6,
                 flags_set: null,
                 
                 next_stage: 4
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Living Room",
                 
                 flags_required: null,
                 
-                video_id: 6,
+                video_id: 10,
                 flags_set: null,
                 
                 next_stage: 5
@@ -124,7 +691,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Tap",
                 
                 flags_required: null,
@@ -135,7 +702,7 @@ var stages = [
                 next_stage: 5
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Dog Lead",
                 
                 flags_required: null,
@@ -155,10 +722,10 @@ var stages = [
         is_end: false,
         
         decision:false,
-        default_outcome: null,
+        default_outcome: 0,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: null,
                 
                 flags_required: null,
@@ -181,7 +748,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Camera",
                 
                 flags_required: null,
@@ -192,7 +759,7 @@ var stages = [
                 next_stage: 7
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Drawer",
                 
                 flags_required: null,
@@ -215,7 +782,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Drawing",
                 
                 flags_required: null,
@@ -226,7 +793,7 @@ var stages = [
                 next_stage: 8
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Painting",
                 
                 flags_required: null,
@@ -249,7 +816,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Corridor",
                 
                 flags_required: null,
@@ -260,7 +827,7 @@ var stages = [
                 next_stage: 9
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Room",
                 
                 flags_required: null,
@@ -283,18 +850,18 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Floorboards",
                 
                 flags_required: null,
                 
-                video_id: 2,
+                video_id: 20,
                 flags_set: null,
                 
                 next_stage: 10
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Rope",
                 
                 flags_required: null,
@@ -317,7 +884,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Left Room",
                 
                 flags_required: null,
@@ -328,7 +895,7 @@ var stages = [
                 next_stage: 11
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Right Room",
                 
                 flags_required: null,
@@ -351,7 +918,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Enter",
                 
                 flags_required: null,
@@ -374,7 +941,7 @@ var stages = [
         default_outcome: 0,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Default",
                 
                 flags_required: null,
@@ -382,9 +949,10 @@ var stages = [
                 video_id: 29,
                 flags_set: null,
                 
-                next_stage: 13
-            },            {
-                option_index: 1,
+                next_stage: 12
+            },            
+            {
+                outcome_index: 1,
                 title: "Door",
                 
                 flags_required: null,
@@ -392,9 +960,10 @@ var stages = [
                 video_id: 30,
                 flags_set: null,
                 
-                next_stage: 13
-            },            {
-                option_index: 2,
+                next_stage: 12
+            },            
+            {
+                outcome_index: 2,
                 title: "Stairs",
                 
                 flags_required: ['lookedAtPainting'],
@@ -405,7 +974,7 @@ var stages = [
                 next_stage: 13
             },
             {
-                option_index: 3,
+                outcome_index: 3,
                 title: "Stairs",
                 
                 flags_required: ['lookedAtDrawing'],
@@ -428,7 +997,7 @@ var stages = [
         default_outcome: 0,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Default",
                 
                 flags_required: null,
@@ -436,10 +1005,10 @@ var stages = [
                 video_id: 34,
                 flags_set: null,
                 
-                next_stage: 14
+                next_stage: 13
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Help",
                 
                 flags_required: null,
@@ -447,10 +1016,10 @@ var stages = [
                 video_id: 35,
                 flags_set: null,
                 
-                next_stage: 14
+                next_stage: 13
             },
             {
-                option_index: 2,
+                outcome_index: 2,
                 title: "Leave",
                 
                 flags_required: null,
@@ -473,7 +1042,7 @@ var stages = [
         default_outcome: null,
         outcomes: [
             {
-                option_index: 0,
+                outcome_index: 0,
                 title: "Save",
                 
                 flags_required: null,
@@ -484,7 +1053,7 @@ var stages = [
                 next_stage: null
             },
             {
-                option_index: 1,
+                outcome_index: 1,
                 title: "Leave",
                 
                 flags_required: null,

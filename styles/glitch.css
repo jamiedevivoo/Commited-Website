@@ -6,7 +6,8 @@
 .glitch::after, .glitch::before {
     content: attr(data-text);
     position: absolute;
-    opacity: 0.8;
+    opacity: 0.9;
+    color:white;
     top:0;
     bottom:0;
     height: 100%;

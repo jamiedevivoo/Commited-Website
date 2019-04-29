@@ -52,7 +52,7 @@
             </span>
         </div>  
         <div class="component pro">
-            <img src="images/ash@2x.jpg">
+            <img src="images/jamie@2x.jpg">
             <h3>Jamie De Vivo</h3>
             <h4>Developer</h4>
             <span>
@@ -72,7 +72,7 @@
             </span>
         </div>  
         <div class="component pro">
-            <img src="images/ash@2x.jpg">
+            <img src="images/jack@2x.jpg">
             <h3>JACK ZOTTOLA</h3>
             <h4>CO- WRITER</h4>
             <span>

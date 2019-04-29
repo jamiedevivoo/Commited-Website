@@ -126,12 +126,20 @@ div#choiceSelection span.playerChoice {
     height: 100%;
     width: 100%;
     vertical-align: middle;
-    line-height: 3em;
+    line-height: 2.5em;
     opacity: 0.5;
     transition: 0.4s ease-in-out;
     transition-delay: 0s;
     border-bottom: black solid 2px;
     background-color: rgba(255,255,255,0.0);
+}
+div#choiceSelection span.playerChoice::before {
+    content: "→";
+    position: absolute;
+    width: 1em;
+    margin-left: -1.5em;
+    opacity: 0;
+    transition: all 0.2s;
 }
 div#choiceSelection span.playerChoice:hover, div#choiceSelection span.playerChoice.selected {
     opacity: 1;
@@ -140,6 +148,9 @@ div#choiceSelection span.playerChoice:hover, div#choiceSelection span.playerChoi
     background-color: rgba(255,255,255,0.01);
 }
 
+div#choiceSelection span.playerChoice:hover::before, div#choiceSelection span.playerChoice.selected::before {
+    opacity: 0.4;
+}
 div#choiceSelection span.playerChoice:hover::first-letter, div#choiceSelection span.playerChoice.selected::first-letter {
     border-bottom: solid rgba(255,150,150,0.04) 2px;
 }
@@ -171,6 +182,16 @@ div#interactiveLayer::before {
 }
 div#interactiveLayer::after {
     bottom: 0;
+}
+span.playerChoice.locked::before {
+    opacity: 0;
+    display: none;
+}
+span.playerChoice.locked::first-letter {
+    border-bottom: 0;
+}
+span.playerChoice.locked {
+    border: rgba(0,0,0,0) solid 3px !important;
 }
 body.filmLaunched {
     overflow: hidden;
@@ -258,6 +279,26 @@ body.filmLaunched {
     font-size: 1.5em;
     width: 100%;
     margin-top:2.5em;
+    max-width: 20em;
+}
+.playerSplash button:focus, .playerSplash button:focus-within {
+	box-shadow: inset 0px 0px 10px rgba(255,255,255,0.4);
+}
+.playerSplash button:active {
+    box-shadow: inset 0px 0px 40px rgba(0,0,0,1);
+}
+.playerSplash h2 {
+	letter-spacing: 0.2em;
+}
+.playerSplash h2.glitch::before {
+	left: 1px;
+    right: -1px;
+    text-shadow: 1px 0 blue;
+}
+.playerSplash h2.glitch::after {
+	left: 1px;
+    right: 0px;
+    text-shadow: -1px 0 red;
 }
 .playerSplash h4 {
     padding-top: 10px;
@@ -270,6 +311,6 @@ body.filmLaunched {
 .filmPlayer video {
     transition: all 0.5s;
 }
-.filmPlayer video.queued {
+.filmPlayer video.queued, .filmPlayer video.completed {
     display: none;
 }

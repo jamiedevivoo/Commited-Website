@@ -1,3 +1,4 @@
+
 //document.addEventListener('DOMContentLoaded', initPlayer);
 
 var body = document.getElementsByTagName("body")[0];
@@ -29,13 +30,22 @@ var player = {
     visible: false,
     state: "uninitialised",
     currentStage: null,
+    currentVideo: null,
+    currentSelection: null,
     
     // Video
     vObjects: {
         all: [],
-        get pilot()     { return findObjectByKey(this.all, 'is_start', true);           },
+        get pilot()     { return findObjectByKey(this.all, 'is_start', true);      },
         get live()      { return findObjectByKey(this.all, 'currentVideo', true);  },
-        get queued()    { return findObjectByKey(this.all, 'queued', true);             },
+        get queued()    { return findObjectByKey(this.all, 'queued', true);        },
+        
+        getVideoObjectByID: function(id) {
+            var found = this.all.find(function(element) {
+                return element == id;
+            }); 
+            return found
+        }
     },
     
     dock: {
@@ -45,31 +55,18 @@ var player = {
         
         show: function() {
             this.visible = true;
-            $(this.e).removeClass('active');
-            $(player.interactiveLayer).removeClass('bordered');
-            bindInteractionEvents();
+            $(this.e).addClass('active');
+            $(player.interactiveLayer).addClass('bordered');
         },
     
         hide: function() {
             this.visible = false;
-            $(this.e).addClass('active');
-            $(player.interactiveLayer).addClass('bordered');
+            $(this.e).removeClass('active');
+            $(player.interactiveLayer).removeClass('bordered');
         },
             
     },
-    availableOutcomes: [
-        {
-            option_index: null,
-            title: null,
-
-            flags_required: null,
-
-            video_id: null,
-            flags_set: null,
-
-            next_stage: null
-        }
-    ], 
+    choices: [], 
 
     // Other
     flags: [],
@@ -117,12 +114,12 @@ var player = {
     // Interaction Tracking
     highlightedChoice: {
         get element() {
-            return player.dock.querySelector(".playerChoice.selected");
+            return player.dock.e.querySelector(".playerChoice.selected");
         },
         get index() {
-            console.log(player.highlightedChoice.element);
-            if ((typeof player.highlightedChoice.element !== 'null') && (typeof this.element !== 'undefined')) {
-                return player.highlightedChoice.element.getAttribute("data-stageid");
+            console.log(this.element);
+            if ((this.element !== null) && (this.element !== undefined)) {
+                return this.element.getAttribute("data-stageid");
             } else {
                 return '0';
             }
@@ -136,21 +133,48 @@ var player = {
     // # METHODS # //
     loadVideo: function(videoObject) {
         if (typeof videoObject !== 'undefined') {
-            videoObject.e = createVideoElement(videoObject);
-            this.vObjects.all.push(videoObject);
+
+            var exists;
+            for(exists = false, i = 0; i < this.vObjects.all.length && exists == false; i++) {
+                if (this.vObjects.all[i].id == videoObject.id) {
+                    console.log("⮑ → [Video is already loaded] ❌ ");
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists == false) {
+                videoObject.e = createVideoElement(videoObject);
+                this.vObjects.all.push(videoObject);
+            }
         }
     },
+    
     queue: function(videoObject) {
         
     },
+    
     play: function(videoObject) {
         if (typeof videoObject == 'undefined') {
             this.vObjects.live.e.play();
+            this.vObjects.live.currentVideo = true;
         } else {
+            this.vObjects.all.forEach( function(vObject) { 
+                vObject.currentVideo = false; 
+                vObject.e.pause()
+            });
+            
+            $(this.binded.videos).removeClass("active");
+            
+            $(videoObject.e).removeClass("queued").addClass("active");
             videoObject.e.play();
             videoObject.currentVideo = true;
+            this.currentVideo = videoObject.id;
+            this.currentStage = videoObject.stage;
         }
+        this.player.focus();
     },
+    
     pause: function() {
         this.vObjects.live.e.pause();
     }
@@ -308,6 +332,7 @@ function initPlayer(callback) {
         player.state = "initialising";
     
         $(".playerSplash").addClass('show');
+        $(".playerSplash button").focus();
         player.container.setAttribute("data-playerInitialised",true);
         
         for(var i=0; i < stages.length; i++) {
@@ -324,7 +349,6 @@ function initPlayer(callback) {
                 callback()
             }
         }
-        
     }
 }
 
@@ -389,6 +413,7 @@ function startVideo(videoObject) {
     
     switch (videoObject.type) {
         case "decision":
+            loadChoicesToDockForDecision(videoObject);
             player.dock.show();
             break;
         case "outcome":
@@ -399,39 +424,89 @@ function startVideo(videoObject) {
             break;
     }
     
+        
+    if ((videoObject.flags_set !== null) || (videoObject.flags_set !== undefined)) {
+        player.flags.push(videoObject.flags_set);
+        console.log("[Setting Flag:",videoObject.flags_set,"]");
+    }
+    
     player.play(videoObject);
-    $(videoObject.e).addClass("active").removeClass("queued");
-    player.currentStage = videoObject.stage_id;
+    player.vObjects.live.e.currentTime = 0;
     console.log("[Video Playing:",videoObject.id,"] ✅ ");
-    player.queue(videoObject.next_stage);
 }
 
 
+
+function loadChoicesToDockForDecision(decisionVideoObject) {     
+    player.dock.e.innerHTML = '';
+    decisionVideoObject.choices.forEach( function(choice) { 
+        player.dock.e.appendChild(choice);
+        console.log("⮑ → [Added Choice to DOM:",choice.title,"] ✅ ");
+    });
+}
 
 
 
 // Start the current video
 function stopVideo() {
-        player.vObjects.live.e.pause();
-//    var stageID = videoTag.getAttribute("data-stageid");
-//    if (stages[stageID].decision == true) {
-//        var dock = player.dock;
-//        $(dock).addClass("active");
-//    } else {
-//        $(dock).removeClass("active");
-//    }
-//    
-//    $(videoTag).addClass("active");
-//    $(videoTag).removeClass("queued");  
-//    
-//    bindVideoEvents()
-//    bindInteractionEvents()
-    
+        player.vObjects.live.e.pause();  
 }
 
 
 
 
+function nextVideoAfter(oldVideo) {
+    
+    if (oldVideo.next_stage !== null) {
+        loadStage(oldVideo.next_stage);
+    }
+    if (player.vObjects.getVideoObjectByID([stages[oldVideo.next_stage].video_id]) == null) {
+        console.log("video isn't loaded");
+    }                
+    
+    console.log("⮑ → [Next Stage is set:",oldVideo.next_stage,"]");
+    if (oldVideo.next_stage !== null) {
+        loadStage(oldVideo.next_stage);
+    }
+
+    loadStage(oldVideo.next_stage);
+
+    var nextVideo;
+    switch (oldVideo.type) {
+        case "decision":
+            console.log(player.vObjects.getVideoObjectByID(player.vObjects.live.nextVideo));
+            nextVideo = player.vObjects.getVideoObjectByID(player.vObjects.live.nextVideo);
+            break;
+        case "static":
+            console.log(player.vObjects.getVideoObjectByID(stages[oldVideo.next_stage].video_id));
+            nextVideo = player.vObjects.getVideoObjectByID(stages[oldVideo.next_stage].video_id);
+            break;
+        case "outcome":
+            console.log(stages[oldVideo.next_stage].video_id);
+            console.log(oldVideo.next_stage);
+            console.log(player.vObjects.getVideoObjectByID(stages[oldVideo.next_stage].video_id));
+            nextVideo = player.vObjects.getVideoObjectByID(stages[oldVideo.next_stage].video_id);
+            break;
+    }
+    
+    oldVideo.completed = true;
+    $(oldVideo).addClass("completed").removeClass("active");
+    try {
+        player.vObjects.all.forEach( function(video) { 
+            if (video.stage < nextVideo.stage) {
+                if ((player.player.contains(video.e)) && (video.addedToDOM == true)) {
+                    video.e.removeEventListener("ended", livePlayerEnded);
+                    player.player.removeChild(video.e);
+                    video.addedToDOM = false;
+                }
+            }
+        });
+    } catch(err) { console.log("Error", err); }
+
+    loadStage(nextVideo.stage);
+    loadStage(nextVideo.stage + 1);
+    startVideo(nextVideo);
+}
 
 
 
@@ -449,33 +524,35 @@ function stopVideo() {
 // Load the provided stageID
 function loadStage(stageIndex) {
     console.log("⮑ [Loading Stage:",stageIndex+".x","] 👩‍💻 ");
+    
+    var reload;
+    
     var stageVideoObject = createVideoObject(stageIndex);
     player.loadVideo(stageVideoObject)
-
-    bindPlayerLayer(stageVideoObject, function() {
-        bindVideoEvents(stageVideoObject);
-    });
-        
-    console.log("⮑ → [Loading Outcomes for:",stageIndex,"] 🛠 ");
-    
+    bindPlayerLayer(stageVideoObject);
+            
     if ((stages[stageIndex].outcomes.length) <= 0 || (stages[stageIndex].outcomes[0].video_id == null)) {
-        console.log("⮑ → [Stage",stageIndex," has no optional Outcomes] ✅ "); 
+        console.log("⮑ → [Stage",stageIndex," has no optional Outcomes, loading next stage instead:",stageVideoObject.next_stage,"] ✅ "); 
+        reload = function() {loadStage(stageVideoObject.next_stage) };
     } else {
+        console.log("⮑ → [Loading Outcomes for:",stageIndex,"] 🛠 ");
         for(var i=0; i < stages[stageIndex].outcomes.length; i++) {
             var outcomeVideoObject = createVideoObject(stageIndex, i);
 
             player.loadVideo(outcomeVideoObject)
-            createChoiceFromOptionVideoObject(outcomeVideoObject);
-
-            bindPlayerLayer(outcomeVideoObject, function() {
-                bindVideoEvents(outcomeVideoObject);
-            });
+            bindPlayerLayer(outcomeVideoObject);
+            
+            stageVideoObject.choices.push(createChoiceFromOptionVideoObject(outcomeVideoObject));
+            
         }
-        bindInteractionEvents();
-        console.log("⮑ → [Outcomes for: ",stageIndex," Created] ✅ ");
+        console.log("⮑ → [Outcomes for stage: ",stageIndex," Created] ✅ ");
     }
     
     console.log("⮑ [Stage Created:",stageIndex+".x","] ✅ ");
+    
+    if (typeof reload !== 'undefined') {
+        reload();
+    }
 }
 
 
@@ -498,7 +575,7 @@ function loadStage(stageIndex) {
 
 // Add the provided video the Player, with the option and stage metadata
 function bindPlayerLayer(videoObject, callback) {
-    console.log("⮑ [Binding to DOM, VObject ID:",videoObject.id,"] 👩‍💻 ");
+//    console.log("⮑ [Binding to DOM, VObject ID:",videoObject.id,"] 👩‍💻 ");
 
     // 1) Check if video is already in the Player DOM
     var exists;
@@ -510,11 +587,33 @@ function bindPlayerLayer(videoObject, callback) {
         }
     }
     
+    if (videoObject.e === null) {
+        switch (videoObject.type) {
+            case "decision":
+                console.log(createVideoObject(videoObject.stage, videoObject.outcome_index));
+                videoObject.e = createVideoObject(videoObject.stage);
+                break;
+            case "outcome":
+                console.log(createVideoObject(videoObject.stage, videoObject.outcome_index));
+                videoObject.e = createVideoObject(videoObject.stage, videoObject.outcome_index);
+                break;
+            case "static":
+                console.log(createVideoObject(videoObject.stage));
+                videoObject.e = createVideoObject(videoObject.stage);
+                break;
+        }
+    }
+    
     // 2) If it isn't already in the DOM, add it to the DOM
-    if (exists == false) {        
+    if ((exists == false)) {   
+        console.log(exists, videoObject.e, videoObject, typeof videoObject.e);
         player.player.appendChild(videoObject.e);
-        console.log("⮑ [Binded to DOM, VObject ID:",videoObject.id,"] ✅ ");
-        callback();
+        videoObject.addedToDOM = true;
+        console.log("⮑ → [Binded to DOM, VObject ID:",videoObject.id,"] ✅ ");
+        
+        if (typeof callback !== 'undefined') {
+            callback();
+        }
     }
 }
 
@@ -541,7 +640,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
     
     // Creating Video Objects for Stages
     if ((typeof stageIndex !== 'undefined') && (typeof outcomeIndex === 'undefined')) {
-        console.log("⮑ → [Creating VObject for Stage:",stageIndex+".x","] 🛠 ");
+//        console.log("⮑ → [Creating VObject for Stage:",stageIndex+".x","] 🛠 ");
                 
         var stage = stages[stageIndex];
         var video = videos[stage.video_id];
@@ -553,6 +652,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
         
         if (stage.decision == false) { 
             type = 'static';
+            console.log(stage,stage.default_outcome, stage.outcomes[stage.default_outcome])
             next_stage = stage.outcomes[stage.default_outcome].next_stage;
         }
         
@@ -561,6 +661,10 @@ function createVideoObject(stageIndex, outcomeIndex) {
             type: type,
             next_stage: next_stage,
             e: null,
+            
+            completed: false,
+
+            choices: [],
             
             source:video.source,
             manifest:video.manifest,
@@ -582,7 +686,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
              (typeof outcomeIndex !== 'undefined') && 
              ((stages[stageIndex].default_outcome === null) || (stages[stageIndex].outcomes[stages[stageIndex].default_outcome].video_id !== null))
             ) {
-        console.log("⮑ → [Creating VObject for Outcome:",stageIndex+"."+outcomeIndex,"] 🛠 ");
+//        console.log("⮑ → [Creating VObject for Outcome:",stageIndex+"."+outcomeIndex,"] 🛠 ");
         
         var stage = stages[stageIndex];
         var outcome = stage.outcomes[outcomeIndex];
@@ -596,6 +700,8 @@ function createVideoObject(stageIndex, outcomeIndex) {
             next_stage: outcome.next_stage,
             e: null,
             
+            completed: false,
+            
             source:video.source,
             manifest:video.manifest,
             blob: video.lob,
@@ -607,12 +713,12 @@ function createVideoObject(stageIndex, outcomeIndex) {
             timeout: timeout,
             default_outcome: stage.default_outcome,
             
-            outcome_index: outcome.option_index,
+            outcome_index: outcome.outcome_index,
             title: outcome.title,
             flags_required: outcome.flags_required,
             flags_set: outcome.flags_set
         }
-        console.log("⮑ → [Created VObject for Outcome:",stageIndex+".x","] ✅ ");
+        console.log("⮑ → [Created VObject for Outcome:",stageIndex+"."+outcomeIndex,"] ✅ ");
         return videoObject;
     }
 }
@@ -638,7 +744,7 @@ function createVideoObject(stageIndex, outcomeIndex) {
 // Create a video element for the supplied videoObject
 function createVideoElement(videoObject) { // Returns Video Element
     if (typeof videoObject !== 'undefined') {
-        console.log("⮑ → [Creating Video VElement for VObject:",videoObject.id,"] 🛠 ");
+//        console.log("⮑ → [Creating Video VElement for VObject:",videoObject.id,"] 🛠 ");
         
         var videoElement = document.createElement('video');
             videoElement.controls = false;
@@ -651,7 +757,6 @@ function createVideoElement(videoObject) { // Returns Video Element
 
             switch (videoObject.type) {
                 case "decision":
-                    videoElement.setAttribute("loop","loop");
                     break;
                 case "static":
                     break;
@@ -659,6 +764,8 @@ function createVideoElement(videoObject) { // Returns Video Element
                     videoElement.setAttribute("data-outcomeID",videoObject.outcome_index);
                     break;
             }
+        
+            videoElement.addEventListener("ended", livePlayerEnded);
         
         console.log("⮑ → [Created VElement for VObject:",videoObject.id,"] ✅ ");
         return videoElement;
@@ -671,18 +778,29 @@ function createVideoElement(videoObject) { // Returns Video Element
 
 function createChoiceFromOptionVideoObject(videoObject) {
     if ((typeof videoObject !== 'undefined') && (videoObject.type == 'outcome')) {
-        console.log("⮑ → [Creating Choice for",videoObject.id+"."+videoObject.outcome_index,"] 🛠 ");
+//        console.log("⮑ → [Creating Choice for outcome:",videoObject.outcome_index,"(videoID:",videoObject.id,")] 🛠 ");
+        var isChoiceAvailable = true;
+        
+        if (videoObject.flags_required !== null) {
+            if (player.flags.indexOf(videoObject.flags_required[0]) < 0) {
+                isChoiceAvailable = false;
+            }
+        }
+          
+        if (isChoiceAvailable === true) {
+            // Create and add Choice
+            var playerChoice = document.createElement('span');
+                playerChoice.innerHTML = videoObject.title;
+                $(playerChoice).addClass("playerChoice");
+                playerChoice.setAttribute("data-outcomeIndex",videoObject.outcome_index);
+                playerChoice.setAttribute("data-nextvideoId",videoObject.id);
+                playerChoice.setAttribute("data-nextstage",videoObject.stage);
 
-        // Create and add Choice
-        var playerChoice = document.createElement('span');
-            playerChoice.innerHTML = videoObject.title;
-            $(playerChoice).addClass("playerChoice");
-            playerChoice.setAttribute("data-optionIndex",videoObject.option_index);
+                playerChoice.addEventListener("click", selectingChoiceListener);
+                playerChoice.addEventListener("mouseenter", selectingChoiceListener);
 
-        var dock = player.dock.e;
-            dock.appendChild(playerChoice);
-        console.log("⮑ → [Created and added Choice to DOM:",videoObject.id+"."+videoObject.outcome_index,"(",videoObject.title,"))] ✅ ");
-
+                return playerChoice;
+        }
     }
 }
 
@@ -707,12 +825,28 @@ function createChoiceFromOptionVideoObject(videoObject) {
 
 // Highlight the provided Choice Tag
 function highlightChoice(choice) {
-    
     var newChoice = player.binded.choices[choice];
-    console.log("highlighting choice: ",newChoice)
     $(".playerChoice").removeClass("selected"); 
     $(newChoice).addClass("selected"); 
-    
+}
+
+
+
+
+
+// Highlight the provided Choice Tag
+function lockChoice() {    
+    if (player.vObjects.live.type == "decision") {
+        var highlightedChoice = player.highlightedChoice.element
+        $(highlightedChoice).addClass("locked");
+        var optionIndex = highlightedChoice.getAttribute("data-outcomeIndex");
+        console.log("[Locking Choice",optionIndex,"]");
+        player.vObjects.live.optionIndex = parseInt(optionIndex);
+        player.vObjects.live.nextVideo = parseInt(highlightedChoice.getAttribute("data-nextvideoId"));
+        player.vObjects.live.next_stage = parseInt(highlightedChoice.getAttribute("data-nextstage"));
+        
+        $(".choiceSelection .playerChoice:not(.locked)").css({"width":"0","opacity":"0"});
+    }
 }
 
 
@@ -730,14 +864,14 @@ function navigateOptions(direction) {
     switch (direction) {
             
         case "left": console.log("left");
-            if ((typeof highlightedChoiceIndex === 'null') || ((highlightedChoiceIndex - 1) < 0)) 
+            if ((highlightedChoiceIndex === null) || ((highlightedChoiceIndex - 1) < 0)) 
                 { newChoice = 0; } 
             else 
                 { newChoice = highlightedChoiceIndex - 1; }
             break;
             
         case "right": console.log("right");
-            if ((typeof highlightedChoiceIndex === 'null') || ((highlightedChoiceIndex + 1) > (allBindedChoices.length - 1))) 
+            if ((highlightedChoiceIndex === null) || ((highlightedChoiceIndex + 1) > (allBindedChoices.length - 1))) 
                 { newChoice = allBindedChoices.length - 1; } 
             else 
                 { newChoice = highlightedChoiceIndex + 1; }
@@ -757,23 +891,20 @@ function navigateOptions(direction) {
 // Request Fullscreen
 function requestFullscreen() {
     
-//    try {
-//        if(player.container.requestFullscreen) {
-//            player.container.requestFullscreen();
-//        }
-//        else if(player.container.mozRequestFullScreen) {
-//            player.container.mozRequestFullScreen();
-//        }
-//        else if(player.container.webkitRequestFullscreen) {
-//            player.container.webkitRequestFullscreen();
-//        }
-//        else if(player.container.msRequestFullscreen) {
-//            player.container.msRequestFullscreen();
-//        }
-//    }
-//    catch(error) {
-//        console.log(["Fullscreen not supported"]);
-//    }
+    try {
+        if(player.container.requestFullscreen) {
+            player.container.requestFullscreen();
+        }
+        else if(player.container.mozRequestFullScreen) {
+            player.container.mozRequestFullScreen();
+        }
+        else if(player.container.webkitRequestFullscreen) {
+            player.container.webkitRequestFullscreen();
+        }
+        else if(player.container.msRequestFullscreen) {
+            player.container.msRequestFullscreen();
+        }
+    } catch(err) { console.log("Error", err); }
 }
 
 
@@ -794,90 +925,67 @@ function requestFullscreen() {
 
 
 
-// Bind events for interacting with the player
-function bindInteractionEvents() { 
-    
-//    var binded.videos = player.binded.videos;
-//    console.log(allBindedChoices);
-//    for(var i=0; i < allChocies.length; i++) {
-//        $(allBindedChoices[i]).click(function() {
-//            var choiceIndex = $(this).getAttribute("data-optionindex");
-//            highlightChoice(choiceIndex);
-//            console.log("click on choice");
-//        });
-//
-//       $(allBindedChoices[i]).hover(
-//            function() {
-//                console.log(this);
-//                var choiceIndex = $(this).getAttribute("data-optionindex");
-//                highlightChoice(choiceIndex);
-//                console.log("hover on choice");
-//            }, function() {
-//            }
-//        );
-//    }
-
-
 
 
 
 $(document).keyup(function(e) {
-        console.log("key pressed");
-        switch (e.keyCode) {
-            case 27: // Escape
-                exitCommitted();
-                break;
-            case 37: // Left Arrow
-                navigateOptions("left");
-                break;
-            case 39: // Right Arrow
-                navigateOptions("right");
-                break;
-            case 13: // Enter
-                console.log("Enter");
-                break;
-            case 9: // Tab
-                navigateOptions("right");
-                break;
-        }
-    });
+    console.log("key pressed");
+    switch (e.keyCode) {
+        case 27: // Escape
+            exitCommitted();
+            break;
+        case 37: // Left Arrow
+            navigateOptions("left");
+            break;
+        case 39: // Right Arrow
+            navigateOptions("right");
+            break;
+        case 13: // Enter
+            lockChoice();
+            break;
+        case 9: // Tab
+            navigateOptions("right");
+            break;
+    }
+});
 
+
+
+
+function selectingChoiceListener(event) {
+    console.log(event);
+    var choiceIndex = event.target.getAttribute("data-outcomeindex");
+    console.log("selecting choice",choiceIndex);  
+    
+    highlightChoice(choiceIndex);
+    
+    if (event.type == "click") {
+        lockChoice();
+    }
 }
 
 
 
 
 
-// Bind events for interacting with thew video player
-function bindVideoEvents(videoObject) {
-    console.log("⮑ [Binding Video Events to VElement Instance:",videoObject.id,"] 🛠 ");
-    
-    $(videoObject).on('ended', livePlayerEnded);
-    
-    console.log("⮑ [Video Event Observers binded to VElement:",videoObject.id,"] ✅ ");
-}
+function livePlayerEnded(event) {
+    var videoObject = player.vObjects.getVideoObjectByID(event.target.getAttribute("data-videoid"));
+
+    if (videoObject == player.vObjects.live) {
+        console.log("⮑ [Video Ended:",videoObject.id,"] 🛠 ");
 
 
-
-
-
-function livePlayerEnded() {
-    console.log("⮑ [Video Ended:",player.vObjects.live.id,"] 🛠 ");
-        
-    
-    if (player.vObjects.live.is_end !==true) {
-        console.log("⮑ [Film hasn't ended.]");
-        switch (player.vObjects.live.type) {
-            case "decision":
-                player.dock.show();
-                break;
-            case "static":
-                break;
-            case "outcome":
-                break;
+        if (videoObject.is_end !==true) {
+            console.log("⮑ → [Still more to do]");
+            
+            if (videoObject.next_stage !== null) {
+                nextVideoAfter(videoObject);
+            } else {
+                event.target.play();
+            }
+        } else {
+            layer.vObjects.live.e.pause();
         }
-    } else {
-        player.binded.activeVideo.element.pause();
     }
 }
 
